@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════
+   BRANCH — Pantalla de selección de sucursal
+   ═══════════════════════════════════════════ */
+
+/* ── LAYOUT ── */
+.branch-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HERO HEADER ── */
+.branch-hero {
+  background: linear-gradient(160deg, var(--black) 0%, #2a0a05 60%, #3d0f08 100%);
+  padding: 56px 24px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.branch-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(226,53,37,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.branch-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--cream));
+}
+
+.brand-logo {
+  margin: 0 auto 20px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(226,53,37,0.6);
+  box-shadow: 0 0 40px rgba(226,53,37,0.25);
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-logo-fallback {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 900;
+  color: var(--cream);
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+}
+
+.brand-name em {
+  color: var(--red);
+  font-style: italic;
+}
+
+.brand-tagline {
+  font-size: 0.72rem;
+  letter-spacing: 3.5px;
+  color: var(--cream-dark);
+  text-transform: uppercase;
+  margin-top: 6px;
+  font-weight: 300;
+  opacity: 0.65;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── CONTENT ── */
+.branch-content {
+  flex: 1;
+  padding: 40px 24px 60px;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.branch-prompt {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.branch-prompt h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.branch-prompt p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── BRANCH CARDS ── */
+.branch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.branch-card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: left;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.branch-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--red);
+  transform: scaleY(0);
+  transition: transform 0.22s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+.branch-card:hover {
+  border-color: var(--red);
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
+}
+
+.branch-card:hover::before {
+  transform: scaleY(1);
+}
+
+.branch-card:active {
+  transform: translateX(2px) scale(0.99);
+}
+
+.branch-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  transition: background 0.22s;
+}
+
+.branch-card:hover .branch-icon {
+  background: rgba(226,53,37,0.08);
+  border-color: rgba(226,53,37,0.3);
+}
+
+.branch-info {
+  flex: 1;
+}
+
+.branch-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 3px;
+}
+
+.branch-addr {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.branch-phones {
+  font-size: 0.74rem;
+  color: var(--red);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.branch-arrow {
+  color: var(--red);
+  opacity: 0;
+  font-size: 1.2rem;
+  transition: opacity 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.branch-card:hover .branch-arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* ── FOOTER NOTE ── */
+.branch-footer-note {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .branch-hero { padding: 40px 20px 36px; }
+  .branch-content { padding: 30px 16px 48px; }
+  .branch-card { padding: 16px 18px; }
+  .branch-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+}

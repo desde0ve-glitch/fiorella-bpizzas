@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fiorella B'Pizzas — Selecciona tu sucursal y haz tu pedido">
+  <meta name="theme-color" content="#0e0302">
+  <title>Fiorella B'Pizzas — Elige tu Sucursal</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/branch.css">
+</head>
+<body>
+
+<div class="branch-page">
+
+  <!-- HERO -->
+  <div class="branch-hero">
+    <div class="brand-logo" aria-hidden="true">
+      <!-- Si tienes logo, reemplaza el emoji por: <img src="images/logo.png" alt="Logo Fiorella B'Pizzas"> -->
+      <span class="brand-logo-fallback">🍕</span>
+    </div>
+    <h1 class="brand-name fade-in">Fiorella <em>B'Pizzas</em></h1>
+    <p class="brand-tagline fade-in">Auténtica pizza italiana</p>
+  </div>
+
+  <!-- CONTENT -->
+  <main class="branch-content">
+    <div class="branch-prompt">
+      <h2>¿Desde dónde vas a pedir?</h2>
+      <p>Selecciona la sucursal más cercana a ti</p>
+    </div>
+
+    <div class="branch-list" id="branchList" role="list">
+      <!-- Rendered by branch.js -->
+    </div>
+
+    <p class="branch-footer-note">
+      Tu pedido será enviado por WhatsApp directamente a la sucursal elegida.<br>
+      El pago se realiza al momento de recibir o retirar tu pedido.
+    </p>
+  </main>
+
+</div>
+
+<!-- DATA + LOGIC -->
+<script src="js/data.js"></script>
+<script src="js/branch.js"></script>
+</body>
+</html>
