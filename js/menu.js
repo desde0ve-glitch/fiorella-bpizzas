@@ -500,7 +500,7 @@ function sendWA() {
           + '\n─────────────────────────\n'
           + '*Total estimado: ' + formatPrice(total) + '*\n'
           + (notes ? 'Notas: ' + notes + '\n' : '')
-          + '\nEl pago se realiza en sucursal. Gracias!';
+          + '\n¡Muchas gracias!';
 
   window.open('https://wa.me/' + currentBranch.phones[0] + '?text=' + encodeURIComponent(msg), '_blank');
 }
