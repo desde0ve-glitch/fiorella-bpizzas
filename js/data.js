@@ -87,7 +87,7 @@ const MENU = [
         name: "Combo 3",
         img: null,
         price: 19,
-        allowExtras: false,
+        allowExtras: true,
         desc: "3 Pizzas Margarita 40cm + 1 Coca-Cola 1.5L",
       },
       {
@@ -95,7 +95,7 @@ const MENU = [
         name: "Combo 4",
         img: null,
         price: 25,
-        allowExtras: false,
+        allowExtras: true,
         desc: "4 Pizzas Margarita 40cm + 1 Coca-Cola 1.5L",
       },
       {
@@ -103,7 +103,7 @@ const MENU = [
         name: "Combo 5",
         img: null,
         price: 23,
-        allowExtras: false,
+        allowExtras: true,
         desc: "2 Pizzas Margarita 40cm + 1 Pizza Charcutera 40cm + 1 Coca-Cola 1.5L",
       },
       {
@@ -111,7 +111,7 @@ const MENU = [
         name: "Combo 6",
         img: null,
         price: 26,
-        allowExtras: false,
+        allowExtras: true,
         desc: "1 Pizza Vegetariana + 1 Pizza Charcutera + 1 Pizza Caprese (todas 40cm) + 1 Coca-Cola 1.5L",
       },
       {
@@ -119,7 +119,7 @@ const MENU = [
         name: "Combo 7",
         img: null,
         price: 26,
-        allowExtras: false,
+        allowExtras: true,
         desc: "3 Pizzas Charcutera 40cm + 1 Coca-Cola 1.5L",
       },
       {
@@ -127,7 +127,7 @@ const MENU = [
         name: "Combo 8",
         img: null,
         price: 13,
-        allowExtras: false,
+        allowExtras: true,
         desc: "2 Pizzas Margarita 40cm",
       },
       {
@@ -135,7 +135,7 @@ const MENU = [
         name: "Combo 9",
         img: null,
         price: 14,
-        allowExtras: false,
+        allowExtras: true,
         desc: "2 Pizzas 33cm (salsa napole, queso, jamón, tocineta, salchichón y maíz) + 1 Coca-Cola 1.5L",
       },
       {
@@ -143,7 +143,7 @@ const MENU = [
         name: "Combo 10",
         img: null,
         price: 21,
-        allowExtras: false,
+        allowExtras: true,
         desc: "2 Pizzas Charcutera 40cm + 1 Coca-Cola 1.5L",
       },
     ],
@@ -271,7 +271,7 @@ const MENU = [
         name: "Pasticho",
         img: "images/pasticho.png",
         desc: "Salsa napole, mozzarella, jamón, tocineta y carne molida",
-        allowExtras: false,
+        allowExtras: true,
         sizes: [{ label: "18×14 cm", price: 7.0 }],
       },
       {
@@ -287,7 +287,7 @@ const MENU = [
         name: "Calzone de Atún",
         img: "images/calzone-atun.png",
         desc: "Salsa napole, mozzarella, jamón, cebolla, pimentón y atún",
-        allowExtras: false,
+        allowExtras: true,
         sizes: [{ label: "33 cm", price: 8.0 }],
       },
       {
@@ -295,7 +295,7 @@ const MENU = [
         name: "Roll Tasty",
         img: "images/roll-tasty.png",
         desc: "Salsa napole, mozzarella, jamón, tocineta, tomate y albahaca",
-        allowExtras: false,
+        allowExtras: true,
         sizes: [{ label: "4 rolls", price: 6.0 }],
       },
     ],
