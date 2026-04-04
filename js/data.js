@@ -277,7 +277,7 @@ const MENU = [
       {
         id: "o2", type: "pizza",
         name: "Calzone",
-        img: "images/calzone.png",
+        img: "images/Calzone.png",
         desc: "Salsa napole, mozzarella y jamón",
         allowExtras: true,
         sizes: [{ label: "33 cm", price: 6.0 }],
@@ -285,7 +285,7 @@ const MENU = [
       {
         id: "o3", type: "pizza",
         name: "Calzone de Atún",
-        img: "images/calzone.png",
+        img: "images/Calzone.png",
         desc: "Salsa napole, mozzarella, jamón, cebolla, pimentón y atún",
         allowExtras: true,
         sizes: [{ label: "33 cm", price: 8.0 }],
@@ -293,7 +293,7 @@ const MENU = [
       {
         id: "o4", type: "pizza",
         name: "Roll Tasty",
-        img: "images/roll-tasty.png",
+        img: "images/Roll-tasty.png",
         desc: "Salsa napole, mozzarella, jamón, tocineta, tomate y albahaca",
         allowExtras: true,
         sizes: [{ label: "4 rolls", price: 6.0 }],
@@ -308,7 +308,7 @@ const MENU = [
     icon: "🥤",
     desc: "Refrescantes acompañantes para tu pedido.",
     items: [
-      { id: "b1", type: "drink", name: "Refresco 1.5L", img: "images/refresco.png",  price: 2.5, allowExtras: false },
+      { id: "b1", type: "drink", name: "Refresco 1.5L", img: "images/coca-cola.png",  price: 2.5, allowExtras: false },
       { id: "b2", type: "drink", name: "Lipton",        img: "images/lipton.png",    price: 2.0, allowExtras: false },
       { id: "b3", type: "drink", name: "Gatorade",      img: "images/gatorade.png",  price: 2.0, allowExtras: false },
       { id: "b4", type: "drink", name: "Agua pequeña",  img: "images/agua.png",      price: 1.0, allowExtras: false },
