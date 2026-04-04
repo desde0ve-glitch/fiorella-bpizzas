@@ -870,6 +870,8 @@
 /* ═══════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════ */
+
+/* ── TABLET (≤ 800px) ── */
 @media (max-width: 800px) {
   .menu-layout {
     grid-template-columns: 1fr;
@@ -912,15 +914,112 @@
   .grid-3 { grid-template-columns: 1fr 1fr; }
 }
 
-@media (max-width: 520px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: 1fr 1fr; }
-  .header-inner { gap: 8px; }
-  .header-logo h1 { font-size: 1.1rem; }
-  .cart-btn { padding: 9px 14px; font-size: 0.78rem; }
+/* ── MÓVIL (≤ 600px) — Header en dos filas ── */
+@media (max-width: 600px) {
+
+  /* Header se convierte en dos filas */
+  .header-inner {
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  /* Fila 1: logo ocupa todo el ancho */
+  .header-brand {
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .header-logo h1 {
+    font-size: 1.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Badge de sucursal — se achica */
+  .header-branch-badge {
+    font-size: 0.65rem;
+    padding: 3px 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+
+  /* Fila 1 derecha: solo el carrito */
+  .cart-btn {
+    padding: 9px 14px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  /* Botón "Cambiar sucursal" baja a fila 2, ancho completo */
+  .change-branch-btn {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    padding: 6px;
+    font-size: 0.7rem;
+    border-radius: 8px;
+  }
+
+  /* Mini hero más compacto */
+  .menu-hero {
+    padding: 16px 16px 14px;
+  }
+  .menu-hero h2 { font-size: 1.1rem; }
+  .menu-hero p  { font-size: 0.72rem; }
+
+  /* Layout menú */
+  .menu-layout { padding: 12px 12px; }
+
+  /* Grids en móvil */
+  .grid-2 { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-3 { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Cards más compactas */
+  .card-body  { padding: 11px 12px 12px; }
+  .card-name  { font-size: 0.92rem; }
+  .card-desc  { font-size: 0.68rem; }
+  .card-price { font-size: 0.95rem; }
+  .add-btn    { padding: 7px 11px; font-size: 0.74rem; }
+
+  /* Combo cards */
+  .combo-card    { padding: 14px; }
+  .combo-name    { font-size: 0.95rem; }
+  .combo-contents{ font-size: 0.68rem; }
+  .combo-price   { font-size: 1.15rem; }
+
+  /* Small cards (bebidas) */
+  .small-card  { padding: 10px 8px; }
+  .small-name  { font-size: 0.75rem; }
+  .small-price { font-size: 0.75rem; }
+
+  /* Modal extras en 1 columna */
   .modal-extras { grid-template-columns: 1fr; }
+
+  /* Carrito panel ocupa toda la pantalla */
+  .cart-panel { width: 100%; max-width: 100%; }
+
+  /* Section headers */
+  .section-icon  { width: 38px; height: 38px; font-size: 1.1rem; }
+  .section-title { font-size: 1.25rem; }
+  .section-desc  { font-size: 0.72rem; padding-left: 50px; }
 }
 
-@media (max-width: 360px) {
-  .grid-3 { grid-template-columns: 1fr; }
+/* ── MÓVIL PEQUEÑO (≤ 400px) ── */
+@media (max-width: 400px) {
+  /* Una sola columna para pizzas */
+  .grid-2 { grid-template-columns: 1fr; }
+
+  /* Badge de sucursal se oculta — ya se ve en fila 2 */
+  .header-branch-badge { display: none; }
+
+  .header-logo h1 { font-size: 1.05rem; }
+
+  .combo-card     { padding: 12px; }
+  .modal-sizes    { gap: 6px; }
+  .modal-size-btn { min-width: 70px; font-size: 0.78rem; padding: 7px 10px; }
 }
