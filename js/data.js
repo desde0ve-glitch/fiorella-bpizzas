@@ -247,7 +247,7 @@ const MENU = [
       {
         id: "p9", type: "pizza",
         name: "4 Quesos",
-        img: "images/pizza-4-quesos.png",
+        img: "images/pizza-cuatro-quesos.png",
         desc: "Salsa napole, mozzarella, queso azul, queso pecorino, queso manchego y jamón",
         allowExtras: true,
         sizes: [
@@ -285,7 +285,7 @@ const MENU = [
       {
         id: "o3", type: "pizza",
         name: "Calzone de Atún",
-        img: "images/calzone-atun.png",
+        img: "images/calzone.png",
         desc: "Salsa napole, mozzarella, jamón, cebolla, pimentón y atún",
         allowExtras: true,
         sizes: [{ label: "33 cm", price: 8.0 }],
