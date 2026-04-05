@@ -182,7 +182,6 @@
 .cat-btn .cat-ico { font-size: 1.05rem; flex-shrink: 0; }
 
 /* ── SECTION ── */
-.menu-section { }
 .category-section { margin-bottom: 40px; }
 
 .section-header {
@@ -340,7 +339,7 @@
 }
 
 .card-price {
-  font-family: var(--font-display);
+  font-family: var(--font-price);
   font-size: 1.1rem;
   font-weight: 900;
   color: var(--red);
@@ -463,7 +462,7 @@
 }
 
 .combo-price {
-  font-family: var(--font-display);
+  font-family: var(--font-price);;
   font-size: 1.35rem;
   font-weight: 900;
   color: var(--cream);
@@ -533,7 +532,7 @@
 .small-img-placeholder { font-size: 1.8rem; }
 
 .small-name { font-size: 0.82rem; font-weight: 700; color: var(--black); margin-bottom: 3px; line-height: 1.3; }
-.small-price { font-size: 0.8rem; color: var(--red); font-weight: 700; margin-bottom: 10px; }
+.small-price { font-size: 0.8rem; color: var(--red); font-weight: 700; margin-bottom: 10px; font-family: var(--font-price); }
 .small-footer { display: flex; align-items: center; justify-content: center; }
 
 /* ═══════════════════════════════════════════
