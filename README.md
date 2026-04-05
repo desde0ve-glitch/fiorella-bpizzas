@@ -130,6 +130,6 @@ Vercel detecta el push automáticamente y redespliega en ~20 segundos.
 ## Notas importantes
 
 - La app **no procesa pagos** — solo genera el pedido y redirige a WhatsApp
-- Los precios son **estimados** — el pago real se hace en sucursal
+- Los precios son **estimados** — el pago real se hace con la sucursal sucursal
 - El número de WhatsApp al que se envía el mensaje es el **primer teléfono** de cada sucursal definido en `BRANCHES`
 - Si una sucursal tiene múltiples números, puedes modificar la función `sendWA()` en `menu.js` para agregar un selector
