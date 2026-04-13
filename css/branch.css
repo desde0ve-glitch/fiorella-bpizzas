@@ -1,49 +1,44 @@
 /* ═══════════════════════════════════════════
    BRANCH — Pantalla de selección de sucursal
+   Estilo MD3 Expressive — sin degradados
    ═══════════════════════════════════════════ */
 
-/* ── LAYOUT ── */
 .branch-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--cream);
 }
 
-/* ── HERO HEADER ── */
+/* ── HERO ─────────────────────────────────────────────────────────────────
+   SIN degradados — superficie sólida con acento de color en el borde       */
 .branch-hero {
-  background: linear-gradient(160deg, var(--black) 0%, #2a0a05 60%, #3d0f08 100%);
-  padding: 56px 24px 48px;
+  background: var(--black);                  /* ← cambia este color para cambiar el fondo del hero */
+  padding: 52px 24px 44px;
   text-align: center;
   position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
+  border-bottom: 4px solid var(--red);       /* ← línea de acento MD3 */
 }
 
+/* Punto de luz sutil (no es degradado, es una sombra radial muy suave) */
 .branch-hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 60%, rgba(226,53,37,0.15) 0%, transparent 65%);
+  background: radial-gradient(ellipse 60% 50% at 50% 80%, rgba(226,53,37,0.08) 0%, transparent 100%);
   pointer-events: none;
 }
 
-.branch-hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 60px;
-  background: linear-gradient(to bottom, transparent, var(--cream));
-}
-
+/* ── LOGO ── */
 .brand-logo {
   margin: 0 auto 20px;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-2xl);          /* MD3: squircle en lugar de círculo */
   overflow: hidden;
-  border: 3px solid rgba(226,53,37,0.6);
-  box-shadow: 0 0 40px rgba(226,53,37,0.25);
-  background: var(--black);
+  border: 2px solid rgba(226,53,37,0.5);
+  box-shadow: var(--elev-3);
+  background: var(--black-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,40 +46,34 @@
   z-index: 1;
 }
 
-.brand-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+.brand-logo-fallback { font-size: 2.6rem; line-height: 1; }
 
-.brand-logo-fallback {
-  font-size: 2.8rem;
-  line-height: 1;
-}
-
+/* ── TIPOGRAFÍA HERO ── */
 .brand-name {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
   font-weight: 900;
-  color: var(--cream);
+  color: var(--cream);                       /* ← color del título principal */
   line-height: 1.1;
   position: relative;
   z-index: 1;
+  letter-spacing: -0.5px;
 }
 
 .brand-name em {
-  color: var(--red);
+  color: var(--red);                         /* ← color del acento en el nombre */
   font-style: italic;
 }
 
 .brand-tagline {
-  font-size: 0.72rem;
-  letter-spacing: 3.5px;
-  color: var(--cream-dark);
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  color: var(--cream-dark);                  /* ← color del subtítulo */
   text-transform: uppercase;
-  margin-top: 6px;
+  margin-top: 8px;
   font-weight: 300;
-  opacity: 0.65;
+  opacity: 0.6;
   position: relative;
   z-index: 1;
 }
@@ -92,92 +81,101 @@
 /* ── CONTENT ── */
 .branch-content {
   flex: 1;
-  padding: 40px 24px 60px;
-  max-width: 680px;
+  padding: 36px 20px 60px;
+  max-width: 640px;
   margin: 0 auto;
   width: 100%;
 }
 
+/* ── PROMPT ── */
 .branch-prompt {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .branch-prompt h2 {
   font-family: var(--font-display);
-  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
   font-weight: 700;
-  color: var(--black);
-  margin-bottom: 8px;
+  color: var(--text);
+  margin-bottom: 6px;
 }
 
 .branch-prompt p {
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: var(--muted);
-  font-style: italic;
 }
 
-/* ── BRANCH CARDS ── */
+/* ── BRANCH LIST ── */
 .branch-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
+/* ── BRANCH CARD — MD3 Filled Card con estado pressed ── */
 .branch-card {
-  background: var(--white);
-  border: 2px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px 22px;
+  background: var(--white);                  /* ← fondo de cada card de sucursal */
+  border: 1.5px solid var(--border);         /* ← borde de cada card */
+  border-radius: var(--radius-xl);           /* MD3: esquinas muy redondeadas */
+  padding: 18px 20px;
   display: flex;
   align-items: center;
   gap: 16px;
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition:
+    transform      var(--duration-short) var(--motion-emphasized),
+    box-shadow     var(--duration-short) var(--motion-standard),
+    border-color   var(--duration-short) var(--motion-standard),
+    background     var(--duration-short) var(--motion-standard);
   text-align: left;
   width: 100%;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--elev-1);
   position: relative;
   overflow: hidden;
 }
 
-.branch-card::before {
+/* MD3: state layer en hover */
+.branch-card::after {
   content: '';
   position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 4px;
+  inset: 0;
   background: var(--red);
-  transform: scaleY(0);
-  transition: transform 0.22s ease;
-  border-radius: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity var(--duration-short) var(--motion-standard);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .branch-card:hover {
   border-color: var(--red);
-  box-shadow: var(--shadow-md);
-  transform: translateX(4px);
+  box-shadow: var(--elev-3);
+  transform: translateY(-2px);
 }
 
-.branch-card:hover::before {
-  transform: scaleY(1);
-}
+.branch-card:hover::after { opacity: 0.04; }
 
 .branch-card:active {
-  transform: translateX(2px) scale(0.99);
+  transform: translateY(0) scale(0.985);
+  box-shadow: var(--elev-1);
 }
 
+/* ── ICON ── */
 .branch-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: var(--cream);
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-lg);           /* MD3: esquinas medianas en iconos */
+  background: var(--cream);                  /* ← fondo del ícono de sucursal */
   border: 1.5px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   flex-shrink: 0;
-  transition: background 0.22s;
+  transition: background var(--duration-short) var(--motion-standard),
+              border-color var(--duration-short) var(--motion-standard);
+  position: relative;
+  z-index: 1;
 }
 
 .branch-card:hover .branch-icon {
@@ -185,58 +183,66 @@
   border-color: rgba(226,53,37,0.3);
 }
 
+/* ── INFO ── */
 .branch-info {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .branch-name {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--black);
+  color: var(--text);                        /* ← color del nombre de la sucursal */
   margin-bottom: 3px;
+  line-height: 1.2;
 }
 
 .branch-addr {
   font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.4;
+  color: var(--muted);                       /* ← color de la dirección */
+  line-height: 1.45;
 }
 
 .branch-phones {
-  font-size: 0.74rem;
-  color: var(--red);
+  font-size: 0.73rem;
+  color: var(--red);                         /* ← color de los teléfonos */
   font-weight: 500;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
+/* ── FLECHA ── */
 .branch-arrow {
   color: var(--red);
   opacity: 0;
-  font-size: 1.2rem;
-  transition: opacity 0.2s, transform 0.2s;
+  font-size: 1.1rem;
+  transition: opacity var(--duration-short) var(--motion-standard),
+              transform var(--duration-short) var(--motion-emphasized);
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .branch-card:hover .branch-arrow {
   opacity: 1;
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
-/* ── FOOTER NOTE ── */
+/* ── NOTA PIE ── */
 .branch-footer-note {
   text-align: center;
-  margin-top: 32px;
-  font-size: 0.75rem;
-  color: var(--muted);
-  opacity: 0.6;
-  line-height: 1.5;
+  margin-top: 28px;
+  font-size: 0.74rem;
+  color: var(--muted-light);
+  line-height: 1.6;
 }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 480px) {
-  .branch-hero { padding: 40px 20px 36px; }
-  .branch-content { padding: 30px 16px 48px; }
-  .branch-card { padding: 16px 18px; }
-  .branch-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+  .branch-hero    { padding: 36px 20px 32px; }
+  .branch-content { padding: 24px 16px 48px; }
+  .branch-card    { padding: 15px 16px; }
+  .branch-icon    { width: 44px; height: 44px; font-size: 1.2rem; }
+  .brand-logo     { width: 76px; height: 76px; }
 }
