@@ -45,6 +45,7 @@ const EXTRAS = [
   { id: "x4",  name: "Jamón",           price: 1.0,  img: null },
   { id: "x5",  name: "Salchichón",      price: 1.0,  img: null },
   { id: "x6",  name: "Cebolla",         price: 1.0,  img: null },
+  { id: "x13", name: "Pimentón",        price: 1.0,  img: null },
   { id: "x7",  name: "Chorizo",         price: 1.0,  img: null },
   { id: "x8",  name: "Aceitunas Negras",price: 1.0,  img: null },
   { id: "x9",  name: "Anchoas",         price: 1.5,  img: null },
@@ -256,6 +257,18 @@ const MENU = [
           { label: "40 cm", price: 12.0 },
         ],
       },
+      {
+  id: "p10", type: "pizza",
+  name: "Chocopizza",
+  img: "images/pizza-chocopizza.png",
+  desc: "Nutella o arequipe, masmelo, caramelo Dandy y lluvia de colores",
+  allowExtras: false,
+  sizes: [
+    { label: "22 cm", price: 6.0  },
+    { label: "33 cm", price: 8.0  },
+    { label: "40 cm", price: 15.0 },
+  ],
+},
     ],
   },
 
