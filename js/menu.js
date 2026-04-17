@@ -237,19 +237,17 @@ function renderModal(item) {
     html += '</div></div>';
   }
  
-  if (item.allowExtras) {
+if (item.allowExtras) {
     var freeCount = item.freeExtras || 0;
- 
+
     if (freeCount > 0) {
-      // ── GRUPO 1: Extras gratuitos (precio $1) ──
       var freeList = [];
       var paidList = [];
       for (var j = 0; j < EXTRAS.length; j++) {
         if (EXTRAS[j].price <= 1.0) freeList.push(EXTRAS[j]);
         else                        paidList.push(EXTRAS[j]);
       }
- 
-      // Aviso de extras gratis
+
       html += '<div class="modal-section">';
       html += '<div class="modal-section-title">Incluido en el combo</div>';
       html += '<div class="modal-free-note" id="modalFreeNote">'
@@ -258,51 +256,58 @@ function renderModal(item) {
       html += '<div class="modal-extras">';
       for (var f = 0; f < freeList.length; f++) {
         var ex = freeList[f];
-       html += '<div class="modal-extra-row" id="mextra-' + ex.id + '">'
-      + '<button class="modal-extra-btn" onclick="modalToggleExtra(\'' + ex.id + '\')">'
-      + '<span class="extra-name">' + ex.name + '</span>'
-      + '<span class="extra-price" id="mextra-price-' + ex.id + '">+' + formatPrice(ex.price) + '</span>'
-      + '</button>'
-      + '<div class="mextra-qty-controls" id="mextra-qty-' + ex.id + '" style="display:none">'
-      + '<button class="mextra-minus" onclick="extraMinus(\'' + ex.id + '\')">−</button>'
-      + '<span class="mextra-num" id="mextra-check-' + ex.id + '">0</span>'
-      + '<button class="mextra-plus" onclick="modalToggleExtra(\'' + ex.id + '\')">+</button>'
-      + '</div>'
-      + '</div>';
+        html += '<div class="modal-extra-row" id="mextra-' + ex.id + '">'
+              + '<button class="modal-extra-btn" onclick="modalToggleExtra(\'' + ex.id + '\')">'
+              + '<span class="extra-name">' + ex.name + '</span>'
+              + '<span class="extra-price extra-free-tag" id="mextra-price-' + ex.id + '">Gratis</span>'
+              + '</button>'
+              + '<div class="mextra-qty-controls" id="mextra-qty-' + ex.id + '" style="display:none">'
+              + '<button class="mextra-minus" onclick="extraMinus(\'' + ex.id + '\')">−</button>'
+              + '<span class="mextra-num" id="mextra-check-' + ex.id + '">0</span>'
+              + '<button class="mextra-plus" onclick="modalToggleExtra(\'' + ex.id + '\')">+</button>'
+              + '</div></div>';
       }
       html += '</div></div>';
- 
-      // ── GRUPO 2: Extras con costo adicional ──
+
       if (paidList.length > 0) {
         html += '<div class="modal-section">';
         html += '<div class="modal-section-title">Con costo adicional</div>';
         html += '<div class="modal-extras">';
         for (var p = 0; p < paidList.length; p++) {
           var ep = paidList[p];
-          html += '<button class="modal-extra-btn" id="mextra-' + ep.id + '" onclick="modalToggleExtra(\'' + ep.id + '\')">'
-                + '<div class="modal-extra-check" id="mextra-check-' + ep.id + '"></div>'
+          html += '<div class="modal-extra-row" id="mextra-' + ep.id + '">'
+                + '<button class="modal-extra-btn" onclick="modalToggleExtra(\'' + ep.id + '\')">'
                 + '<span class="extra-name">' + ep.name + '</span>'
-                + '<span class="extra-price">+' + formatPrice(ep.price) + '</span>'
-                + '</button>';
+                + '<span class="extra-price" id="mextra-price-' + ep.id + '">+' + formatPrice(ep.price) + '</span>'
+                + '</button>'
+                + '<div class="mextra-qty-controls" id="mextra-qty-' + ep.id + '" style="display:none">'
+                + '<button class="mextra-minus" onclick="extraMinus(\'' + ep.id + '\')">−</button>'
+                + '<span class="mextra-num" id="mextra-check-' + ep.id + '">0</span>'
+                + '<button class="mextra-plus" onclick="modalToggleExtra(\'' + ep.id + '\')">+</button>'
+                + '</div></div>';
         }
         html += '</div></div>';
       }
- 
+
     } else {
-      // ── Sin extras gratis: lista normal ──
       html += '<div class="modal-section"><div class="modal-section-title">Ingredientes adicionales (opcional)</div><div class="modal-extras">';
       for (var k = 0; k < EXTRAS.length; k++) {
         var ek = EXTRAS[k];
-        html += '<button class="modal-extra-btn" id="mextra-' + ek.id + '" onclick="modalToggleExtra(\'' + ek.id + '\')">'
-              + '<div class="modal-extra-check" id="mextra-check-' + ek.id + '"></div>'
+        html += '<div class="modal-extra-row" id="mextra-' + ek.id + '">'
+              + '<button class="modal-extra-btn" onclick="modalToggleExtra(\'' + ek.id + '\')">'
               + '<span class="extra-name">' + ek.name + '</span>'
-              + '<span class="extra-price">+' + formatPrice(ek.price) + '</span>'
-              + '</button>';
+              + '<span class="extra-price" id="mextra-price-' + ek.id + '">+' + formatPrice(ek.price) + '</span>'
+              + '</button>'
+              + '<div class="mextra-qty-controls" id="mextra-qty-' + ek.id + '" style="display:none">'
+              + '<button class="mextra-minus" onclick="extraMinus(\'' + ek.id + '\')">−</button>'
+              + '<span class="mextra-num" id="mextra-check-' + ek.id + '">0</span>'
+              + '<button class="mextra-plus" onclick="modalToggleExtra(\'' + ek.id + '\')">+</button>'
+              + '</div></div>';
       }
       html += '</div></div>';
     }
   }
- 
+
   document.getElementById('modalBody').innerHTML = html;
   updateModalTotal();
 }
