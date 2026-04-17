@@ -73,6 +73,7 @@ const MENU = [
         img: null,
         price: 9,
         allowExtras: true,
+        freeExtras: 1,
         desc: "1 Pizza Margarita 40cm + 1 Coca-Cola 1.5L + 1 ingrediente adicional",
       },
       {
@@ -81,6 +82,7 @@ const MENU = [
         img: null,
         price: 16,
         allowExtras: true,
+        freeExtras: 2,
         desc: "2 Pizzas Margarita 40cm + 1 Coca-Cola 1.5L + 1 ingrediente adicional por pizza",
       },
       {

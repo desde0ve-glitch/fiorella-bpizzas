@@ -215,12 +215,16 @@ function renderModal(item) {
   var isCombo   = item.type === 'combo';
   var si        = modalState.selectedSizeIdx;
   var basePrice = isCombo ? item.price : item.sizes[si].price;
-
+  var freeLeft  = item.freeExtras || 0;
+ 
+  modalState.freeExtras = freeLeft;
+ 
   document.getElementById('modalProductName').textContent  = item.name;
   document.getElementById('modalProductPrice').textContent = formatPrice(basePrice);
-
+ 
   var html = '';
-
+ 
+  // Selector de tamaño
   if (item.sizes && item.sizes.length > 1) {
     html += '<div class="modal-section"><div class="modal-section-title">Elige tu tamaño</div><div class="modal-sizes">';
     for (var i = 0; i < item.sizes.length; i++) {
@@ -232,20 +236,67 @@ function renderModal(item) {
     }
     html += '</div></div>';
   }
-
+ 
   if (item.allowExtras) {
-    html += '<div class="modal-section"><div class="modal-section-title">Ingredientes adicionales (opcional)</div><div class="modal-extras">';
-    for (var j = 0; j < EXTRAS.length; j++) {
-      var ex = EXTRAS[j];
-      html += '<button class="modal-extra-btn" id="mextra-' + ex.id + '" onclick="modalToggleExtra(\'' + ex.id + '\')">'
-            + '<div class="modal-extra-check" id="mextra-check-' + ex.id + '"></div>'
-            + '<span class="extra-name">' + ex.name + '</span>'
-            + '<span class="extra-price">+' + formatPrice(ex.price) + '</span>'
-            + '</button>';
+    var freeCount = item.freeExtras || 0;
+ 
+    if (freeCount > 0) {
+      // ── GRUPO 1: Extras gratuitos (precio $1) ──
+      var freeList = [];
+      var paidList = [];
+      for (var j = 0; j < EXTRAS.length; j++) {
+        if (EXTRAS[j].price <= 1.0) freeList.push(EXTRAS[j]);
+        else                        paidList.push(EXTRAS[j]);
+      }
+ 
+      // Aviso de extras gratis
+      html += '<div class="modal-section">';
+      html += '<div class="modal-section-title">Incluido en el combo</div>';
+      html += '<div class="modal-free-note" id="modalFreeNote">'
+            + 'Puedes elegir hasta <strong>' + freeCount + '</strong> ingrediente' + (freeCount > 1 ? 's' : '') + ' gratis'
+            + '</div>';
+      html += '<div class="modal-extras">';
+      for (var f = 0; f < freeList.length; f++) {
+        var ex = freeList[f];
+        html += '<button class="modal-extra-btn" id="mextra-' + ex.id + '" onclick="modalToggleExtra(\'' + ex.id + '\')">'
+              + '<div class="modal-extra-check" id="mextra-check-' + ex.id + '"></div>'
+              + '<span class="extra-name">' + ex.name + '</span>'
+              + '<span class="extra-price extra-free-tag">Gratis</span>'
+              + '</button>';
+      }
+      html += '</div></div>';
+ 
+      // ── GRUPO 2: Extras con costo adicional ──
+      if (paidList.length > 0) {
+        html += '<div class="modal-section">';
+        html += '<div class="modal-section-title">Con costo adicional</div>';
+        html += '<div class="modal-extras">';
+        for (var p = 0; p < paidList.length; p++) {
+          var ep = paidList[p];
+          html += '<button class="modal-extra-btn" id="mextra-' + ep.id + '" onclick="modalToggleExtra(\'' + ep.id + '\')">'
+                + '<div class="modal-extra-check" id="mextra-check-' + ep.id + '"></div>'
+                + '<span class="extra-name">' + ep.name + '</span>'
+                + '<span class="extra-price">+' + formatPrice(ep.price) + '</span>'
+                + '</button>';
+        }
+        html += '</div></div>';
+      }
+ 
+    } else {
+      // ── Sin extras gratis: lista normal ──
+      html += '<div class="modal-section"><div class="modal-section-title">Ingredientes adicionales (opcional)</div><div class="modal-extras">';
+      for (var k = 0; k < EXTRAS.length; k++) {
+        var ek = EXTRAS[k];
+        html += '<button class="modal-extra-btn" id="mextra-' + ek.id + '" onclick="modalToggleExtra(\'' + ek.id + '\')">'
+              + '<div class="modal-extra-check" id="mextra-check-' + ek.id + '"></div>'
+              + '<span class="extra-name">' + ek.name + '</span>'
+              + '<span class="extra-price">+' + formatPrice(ek.price) + '</span>'
+              + '</button>';
+      }
+      html += '</div></div>';
     }
-    html += '</div></div>';
   }
-
+ 
   document.getElementById('modalBody').innerHTML = html;
   updateModalTotal();
 }
@@ -260,9 +311,53 @@ function modalSelectSize(si) {
 }
 
 function modalToggleExtra(extraId) {
+  var item      = findItem(modalState.itemId);
+  var freeCount = item.freeExtras || 0;
+  var ex        = null;
+  for (var j = 0; j < EXTRAS.length; j++) {
+    if (EXTRAS[j].id === extraId) { ex = EXTRAS[j]; break; }
+  }
+  if (!ex) return;
+ 
+  var isFreeExtra = (freeCount > 0 && ex.price <= 1.0);
   var idx = modalState.selectedExtras.indexOf(extraId);
-  if (idx > -1) modalState.selectedExtras.splice(idx, 1);
-  else          modalState.selectedExtras.push(extraId);
+ 
+  if (idx > -1) {
+    // Deseleccionar
+    modalState.selectedExtras.splice(idx, 1);
+  } else {
+    // Seleccionar — si es extra gratis y ya llegó al límite, no permitir
+    if (isFreeExtra) {
+      var freeSelected = 0;
+      for (var i = 0; i < modalState.selectedExtras.length; i++) {
+        for (var k = 0; k < EXTRAS.length; k++) {
+          if (EXTRAS[k].id === modalState.selectedExtras[i] && EXTRAS[k].price <= 1.0) {
+            freeSelected++;
+            break;
+          }
+        }
+      }
+      if (freeSelected >= freeCount) {
+        // Llegó al límite — mostrar feedback visual en el aviso
+        var note = document.getElementById('modalFreeNote');
+        if (note) {
+          note.style.background = 'rgba(226,53,37,0.12)';
+          note.style.borderColor = 'var(--red)';
+          note.style.color = 'var(--red)';
+          setTimeout(function() {
+            if (note) {
+              note.style.background = '';
+              note.style.borderColor = '';
+              note.style.color = '';
+            }
+          }, 800);
+        }
+        return;
+      }
+    }
+    modalState.selectedExtras.push(extraId);
+  }
+ 
   var on    = modalState.selectedExtras.indexOf(extraId) > -1;
   document.getElementById('mextra-' + extraId).classList.toggle('selected', on);
   document.getElementById('mextra-check-' + extraId).textContent = on ? '✓' : '';
@@ -270,15 +365,39 @@ function modalToggleExtra(extraId) {
 }
 
 function updateModalTotal() {
-  var item  = findItem(modalState.itemId);
-  var si    = modalState.selectedSizeIdx;
-  var base  = item.type === 'combo' ? item.price : item.sizes[si].price;
-  var extra = 0;
+  var item      = findItem(modalState.itemId);
+  var si        = modalState.selectedSizeIdx;
+  var base      = item.type === 'combo' ? item.price : item.sizes[si].price;
+  var freeCount = item.freeExtras || 0;
+  var extra     = 0;
+  var freeUsed  = 0;
+ 
   for (var i = 0; i < modalState.selectedExtras.length; i++) {
     for (var j = 0; j < EXTRAS.length; j++) {
-      if (EXTRAS[j].id === modalState.selectedExtras[i]) { extra += EXTRAS[j].price; break; }
+      if (EXTRAS[j].id === modalState.selectedExtras[i]) {
+        var exPrice = EXTRAS[j].price;
+        if (freeCount > 0 && exPrice <= 1.0 && freeUsed < freeCount) {
+          // Este extra es gratis — no suma al precio
+          freeUsed++;
+        } else {
+          extra += exPrice;
+        }
+        break;
+      }
     }
   }
+ 
+  // Actualizar nota de gratis restantes
+  var note = document.getElementById('modalFreeNote');
+  if (note && freeCount > 0) {
+    var remaining = freeCount - freeUsed;
+    if (remaining > 0) {
+      note.innerHTML = 'Puedes elegir hasta <strong>' + remaining + '</strong> ingrediente' + (remaining > 1 ? 's' : '') + ' gratis';
+    } else {
+      note.innerHTML = 'Ya elegiste tu' + (freeCount > 1 ? 's ' + freeCount : '') + ' ingrediente' + (freeCount > 1 ? 's' : '') + ' gratis';
+    }
+  }
+ 
   document.getElementById('modalTotal').textContent = formatPrice(base + extra);
 }
 
@@ -289,22 +408,35 @@ function modalConfirm() {
   var sizeLabel = item.sizes ? item.sizes[si].label : null;
   var basePrice = isCombo ? item.price : item.sizes[si].price;
   var cartKey   = (item.sizes && item.sizes.length > 1) ? item.id + '-' + si : item.id;
-
+  var freeCount = item.freeExtras || 0;
+ 
   var selectedExtrasArr = [];
+  var freeUsed = 0;
+ 
   for (var i = 0; i < modalState.selectedExtras.length; i++) {
     for (var j = 0; j < EXTRAS.length; j++) {
-      if (EXTRAS[j].id === modalState.selectedExtras[i]) { selectedExtrasArr.push(EXTRAS[j]); break; }
+      if (EXTRAS[j].id === modalState.selectedExtras[i]) {
+        var exCopy = { id: EXTRAS[j].id, name: EXTRAS[j].name, price: EXTRAS[j].price };
+        // Si es gratis, guardarlo con precio 0 para que el total sea correcto
+        if (freeCount > 0 && EXTRAS[j].price <= 1.0 && freeUsed < freeCount) {
+          exCopy.price = 0;
+          exCopy.name  = EXTRAS[j].name + ' (incl.)';
+          freeUsed++;
+        }
+        selectedExtrasArr.push(exCopy);
+        break;
+      }
     }
   }
-
+ 
   var extrasKey = modalState.selectedExtras.slice().sort().join(',');
   var fullKey   = cartKey + (extrasKey ? ':' + extrasKey : '');
-
+ 
   var existing = null;
   for (var k = 0; k < cartItems.length; k++) {
     if (cartItems[k].fullKey === fullKey) { existing = cartItems[k]; break; }
   }
-
+ 
   if (existing) {
     existing.qty++;
   } else {
@@ -312,9 +444,9 @@ function modalConfirm() {
       name: item.name, img: item.img || null, sizeLabel: sizeLabel,
       basePrice: basePrice, extras: selectedExtrasArr, qty: 1 });
   }
-
+ 
   if (item.sizes && item.sizes.length > 1) selectedSizes[item.id] = si;
-
+ 
   closeModal();
   refreshCard(item.id);
   updateCartBadge();
