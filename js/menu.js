@@ -658,7 +658,22 @@ function cartChg(fullKey, delta) {
 function updateSendBtn() {
   document.getElementById('waSendBtn').disabled = cartItems.length === 0;
 }
+function selectOrderType(type) {
+  var btnPickup   = document.getElementById('btnPickup');
+  var btnDelivery = document.getElementById('btnDelivery');
+  if (type === 'pickup') {
+    btnPickup.classList.add('active');
+    btnDelivery.classList.remove('active');
+  } else {
+    btnDelivery.classList.add('active');
+    btnPickup.classList.remove('active');
+  }
+}
 
+function getOrderType() {
+  var btnDelivery = document.getElementById('btnDelivery');
+  return btnDelivery && btnDelivery.classList.contains('active') ? 'delivery' : 'pickup';
+}
 // ── WHATSAPP ─────────────────────────────────────────────────────────────────
 function sendWA() {
   if (!currentBranch || cartItems.length === 0) return;
@@ -686,6 +701,8 @@ function sendWA() {
     lines.push('• ' + parts.join(' '));
   }
 
+  var orderType = getOrderType();
+  var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
   var greeting = name ? 'Hola, soy *' + name + '*. Quisiera hacer el siguiente pedido:' : 'Hola, quisiera hacer el siguiente pedido:';
   var msg = '*FIORELLA B\'PIZZAS*\n'
           + 'Sucursal: *' + currentBranch.name + '*\n'
@@ -695,6 +712,7 @@ function sendWA() {
           + lines.join('\n')
           + '\n─────────────────────────\n'
           + '*Total estimado: ' + formatPrice(total) + '*\n'
+          + 'Tipo de pedido: *' + orderTypeText + '*\n'
           + (notes ? 'Notas: ' + notes + '\n' : '')
           + '\n¡Muchas gracias!';
 

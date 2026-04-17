@@ -263,7 +263,7 @@ const MENU = [
   id: "p10", type: "pizza",
   name: "Chocopizza",
   img: "images/pizza-chocopizza.png",
-  desc: "Nutella o arequipe, masmelo, caramelo Dandy y lluvia de colores",
+  desc: "Nutella o arequipe, gomitas, caramelo Dandy y lluvia de colores",
   allowExtras: false,
   sizes: [
     { label: "22 cm", price: 6.0  },

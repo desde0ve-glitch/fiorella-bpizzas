@@ -951,3 +951,31 @@
 }
 .mextra-minus:hover, .mextra-plus:hover { background: var(--red); color: white; }
 .mextra-num { font-weight: 900; font-size: 0.9rem; min-width: 16px; text-align: center; color: var(--text); }
+/* ── ORDER TYPE SELECTOR ── */
+.order-type-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.order-type-btn {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--cream);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all var(--duration-short) var(--motion-standard);
+}
+
+.order-type-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.order-type-btn.active {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+}

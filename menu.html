@@ -110,7 +110,17 @@
       </div>
       <p class="total-sub" id="cartSub">0 productos</p>
     </div>
-
+<div class="field">
+  <label>Tipo de pedido</label>
+  <div class="order-type-selector">
+    <button class="order-type-btn active" id="btnPickup" onclick="selectOrderType('pickup')">
+      🏪 Pick-up
+    </button>
+    <button class="order-type-btn" id="btnDelivery" onclick="selectOrderType('delivery')">
+      🛵 Delivery
+    </button>
+  </div>
+</div>
     <div class="field">
       <label for="custName">Tu nombre y cédula (para identificar el pedido)</label>
       <input type="text" id="custName" placeholder="Ej: Carlos Pérez 20.000.000" autocomplete="given-name">
