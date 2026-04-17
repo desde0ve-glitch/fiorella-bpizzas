@@ -199,7 +199,7 @@ function openModal(itemId, forceSizeIdx) {
   var item = findItem(itemId);
   if (!item) return;
   var si = forceSizeIdx !== undefined ? forceSizeIdx : (selectedSizes[itemId] || 0);
-  modalState = { itemId: itemId, selectedSizeIdx: si, selectedExtras: [] };
+  modalState = { itemId: itemId, selectedSizeIdx: si, selectedExtras: {} };
   renderModal(item);
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -311,15 +311,35 @@ function modalSelectSize(si) {
 }
 
 function modalToggleExtra(extraId) {
-  var idx = modalState.selectedExtras.indexOf(extraId);
-  if (idx > -1) {
-    modalState.selectedExtras.splice(idx, 1);
-  } else {
-    modalState.selectedExtras.push(extraId);
+  if (!modalState.selectedExtras) modalState.selectedExtras = {};
+  var current = modalState.selectedExtras[extraId] || 0;
+  var item     = findItem(modalState.itemId);
+  var freeCount = item.freeExtras || 0;
+
+  // Calcular cuántos de $1 hay seleccionados actualmente
+  var ex = null;
+  for (var j = 0; j < EXTRAS.length; j++) {
+    if (EXTRAS[j].id === extraId) { ex = EXTRAS[j]; break; }
   }
-  var on = modalState.selectedExtras.indexOf(extraId) > -1;
-  document.getElementById('mextra-' + extraId).classList.toggle('selected', on);
-  document.getElementById('mextra-check-' + extraId).textContent = on ? '✓' : '';
+  if (!ex) return;
+
+  if (current === 0) {
+    // Agregar primera unidad
+    modalState.selectedExtras[extraId] = 1;
+    document.getElementById('mextra-check-' + extraId).textContent = '1';
+    document.getElementById('mextra-' + extraId).classList.add('selected');
+  } else {
+    // Ya tiene al menos 1 — si es extra de $1 en combo con gratis, permitir agregar más
+    if (freeCount > 0 && ex.price <= 1.0) {
+      modalState.selectedExtras[extraId] = current + 1;
+      document.getElementById('mextra-check-' + extraId).textContent = current + 1;
+    } else {
+      // Sin gratis o precio mayor a $1 — toggle normal (quitar)
+      modalState.selectedExtras[extraId] = 0;
+      document.getElementById('mextra-check-' + extraId).textContent = '';
+      document.getElementById('mextra-' + extraId).classList.remove('selected');
+    }
+  }
   updateModalTotal();
 }
 
@@ -331,75 +351,83 @@ function updateModalTotal() {
   var extra     = 0;
   var freeUsed  = 0;
 
-  for (var i = 0; i < modalState.selectedExtras.length; i++) {
-    for (var j = 0; j < EXTRAS.length; j++) {
-      if (EXTRAS[j].id === modalState.selectedExtras[i]) {
-        var exPrice = EXTRAS[j].price;
-        if (freeCount > 0 && exPrice <= 1.0 && freeUsed < freeCount) {
-          freeUsed++;
-          // este extra es gratis, no suma
-        } else {
-          extra += exPrice;
-        }
-        break;
+  // Calcular total contando cantidades
+  for (var j = 0; j < EXTRAS.length; j++) {
+    var ex  = EXTRAS[j];
+    var qty = (modalState.selectedExtras && modalState.selectedExtras[ex.id]) || 0;
+    if (qty === 0) continue;
+
+    for (var u = 0; u < qty; u++) {
+      if (freeCount > 0 && ex.price <= 1.0 && freeUsed < freeCount) {
+        freeUsed++;
+        // gratis, no suma
+      } else {
+        extra += ex.price;
       }
     }
   }
 
-  // Actualizar etiquetas de precio en cada botón de extra gratis
+  // Actualizar etiquetas de precio en botones de $1
   for (var f = 0; f < EXTRAS.length; f++) {
-    var ex  = EXTRAS[f];
-    var tag = document.getElementById('mextra-' + ex.id);
+    var ef   = EXTRAS[f];
+    var tag  = document.getElementById('mextra-' + ef.id);
     if (!tag) continue;
     var priceSpan = tag.querySelector('.extra-price');
     if (!priceSpan) continue;
 
-    if (freeCount > 0 && ex.price <= 1.0) {
-      // Calcular si este extra específico cae en el rango gratis
-      // Buscar su posición en los seleccionados
-      var posInSelected = modalState.selectedExtras.indexOf(ex.id);
-      if (posInSelected > -1) {
-        // Contar cuántos extras de $1 hay antes de él en el array
-        var freeBeforeThis = 0;
-        for (var s = 0; s < posInSelected; s++) {
-          for (var e = 0; e < EXTRAS.length; e++) {
-            if (EXTRAS[e].id === modalState.selectedExtras[s] && EXTRAS[e].price <= 1.0) {
-              freeBeforeThis++;
-              break;
+    if (freeCount > 0 && ef.price <= 1.0) {
+      var qtyF = (modalState.selectedExtras && modalState.selectedExtras[ef.id]) || 0;
+
+      if (freeUsed < freeCount) {
+        // Aún hay cupo gratis
+        priceSpan.textContent = 'Gratis';
+        priceSpan.className   = 'extra-price extra-free-tag';
+      } else {
+        // Ya no hay cupo — mostrar precio real
+        if (qtyF > 0) {
+          // Está seleccionado: primera(s) gratis, resto cobrado
+          var freeInThis = 0;
+          // Contar cuántos gratis le corresponden a este extra
+          var tempFree = 0;
+          for (var g = 0; g < EXTRAS.length; g++) {
+            var eg   = EXTRAS[g];
+            var qtyG = (modalState.selectedExtras && modalState.selectedExtras[eg.id]) || 0;
+            if (qtyG === 0 || eg.price > 1.0) continue;
+            for (var ug = 0; ug < qtyG; ug++) {
+              if (tempFree < freeCount) {
+                if (eg.id === ef.id) freeInThis++;
+                tempFree++;
+              }
             }
           }
-        }
-        if (freeBeforeThis < freeCount) {
-          priceSpan.textContent = 'Gratis';
-          priceSpan.className   = 'extra-price extra-free-tag';
+          if (freeInThis > 0 && freeInThis < qtyF) {
+            priceSpan.textContent = freeInThis + ' gratis + ' + (qtyF - freeInThis) + ' x ' + formatPrice(ef.price);
+          } else if (freeInThis >= qtyF) {
+            priceSpan.textContent = 'Gratis';
+            priceSpan.className   = 'extra-price extra-free-tag';
+          } else {
+            priceSpan.textContent = '+' + formatPrice(ef.price);
+            priceSpan.className   = 'extra-price';
+          }
         } else {
-          priceSpan.textContent = '+' + formatPrice(ex.price);
-          priceSpan.className   = 'extra-price';
-        }
-      } else {
-        // No está seleccionado — mostrar precio según cuántos gratis quedan
-        if (freeUsed < freeCount) {
-          priceSpan.textContent = 'Gratis';
-          priceSpan.className   = 'extra-price extra-free-tag';
-        } else {
-          priceSpan.textContent = '+' + formatPrice(ex.price);
+          priceSpan.textContent = '+' + formatPrice(ef.price);
           priceSpan.className   = 'extra-price';
         }
       }
     }
   }
 
-  // Actualizar nota
+  // Nota de gratis restantes
   var note = document.getElementById('modalFreeNote');
   if (note && freeCount > 0) {
     var remaining = freeCount - freeUsed;
     if (remaining > 0) {
-      note.innerHTML = 'Puedes elegir <strong>' + remaining + '</strong> ingrediente' + (remaining > 1 ? 's' : '') + ' gratis más';
-      note.style.background   = '';
-      note.style.borderColor  = '';
-      note.style.color        = '';
+      note.innerHTML     = 'Puedes elegir <strong>' + remaining + '</strong> ingrediente' + (remaining > 1 ? 's' : '') + ' gratis mas';
+      note.style.background  = '';
+      note.style.borderColor = '';
+      note.style.color       = '';
     } else {
-      note.innerHTML = 'Ya elegiste tu' + (freeCount > 1 ? 's ' + freeCount : '') + ' ingrediente' + (freeCount > 1 ? 's' : '') + ' gratis. Los siguientes tienen costo.';
+      note.innerHTML     = 'Ya elegiste tu' + (freeCount > 1 ? 's ' + freeCount : '') + ' ingrediente' + (freeCount > 1 ? 's' : '') + ' gratis. Los siguientes tienen costo.';
       note.style.background  = 'rgba(226,53,37,0.06)';
       note.style.borderColor = 'var(--red)';
       note.style.color       = 'var(--muted)';
@@ -417,34 +445,34 @@ function modalConfirm() {
   var basePrice = isCombo ? item.price : item.sizes[si].price;
   var cartKey   = (item.sizes && item.sizes.length > 1) ? item.id + '-' + si : item.id;
   var freeCount = item.freeExtras || 0;
- 
+  var freeUsed  = 0;
+
   var selectedExtrasArr = [];
-  var freeUsed = 0;
- 
-  for (var i = 0; i < modalState.selectedExtras.length; i++) {
-    for (var j = 0; j < EXTRAS.length; j++) {
-      if (EXTRAS[j].id === modalState.selectedExtras[i]) {
-        var exCopy = { id: EXTRAS[j].id, name: EXTRAS[j].name, price: EXTRAS[j].price };
-        // Si es gratis, guardarlo con precio 0 para que el total sea correcto
-        if (freeCount > 0 && EXTRAS[j].price <= 1.0 && freeUsed < freeCount) {
-          exCopy.price = 0;
-          exCopy.name  = EXTRAS[j].name + ' (incl.)';
-          freeUsed++;
-        }
-        selectedExtrasArr.push(exCopy);
-        break;
+
+  for (var j = 0; j < EXTRAS.length; j++) {
+    var ex  = EXTRAS[j];
+    var qty = (modalState.selectedExtras && modalState.selectedExtras[ex.id]) || 0;
+    if (qty === 0) continue;
+
+    for (var u = 0; u < qty; u++) {
+      var exCopy = { id: ex.id, name: ex.name, price: ex.price };
+      if (freeCount > 0 && ex.price <= 1.0 && freeUsed < freeCount) {
+        exCopy.price = 0;
+        exCopy.name  = ex.name + ' (incl.)';
+        freeUsed++;
       }
+      selectedExtrasArr.push(exCopy);
     }
   }
- 
-  var extrasKey = modalState.selectedExtras.slice().sort().join(',');
-  var fullKey   = cartKey + (extrasKey ? ':' + extrasKey : '');
- 
+
+  var extrasKey = JSON.stringify(modalState.selectedExtras || {});
+  var fullKey   = cartKey + ':' + extrasKey;
+
   var existing = null;
   for (var k = 0; k < cartItems.length; k++) {
     if (cartItems[k].fullKey === fullKey) { existing = cartItems[k]; break; }
   }
- 
+
   if (existing) {
     existing.qty++;
   } else {
@@ -452,9 +480,9 @@ function modalConfirm() {
       name: item.name, img: item.img || null, sizeLabel: sizeLabel,
       basePrice: basePrice, extras: selectedExtrasArr, qty: 1 });
   }
- 
+
   if (item.sizes && item.sizes.length > 1) selectedSizes[item.id] = si;
- 
+
   closeModal();
   refreshCard(item.id);
   updateCartBadge();
