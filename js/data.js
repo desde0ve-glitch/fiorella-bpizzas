@@ -324,12 +324,12 @@ const MENU = [
     desc: "Refrescantes acompañantes para tu pedido.",
     items: [
       { id: "b1", type: "drink", name: "Refresco 1.5L", img: "images/coca-cola.png",  price: 2.5, allowExtras: false },
-      { id: "b2", type: "drink", name: "Lipton",        img: "images/lipton.png",    price: 2.0, allowExtras: false },
-      { id: "b3", type: "drink", name: "Gatorade",      img: "images/gatorade.png",  price: 2.0, allowExtras: false },
-      { id: "b4", type: "drink", name: "Agua pequeña",  img: "images/agua.png",      price: 1.0, allowExtras: false },
-      { id: "b5", type: "drink", name: "Agua grande",   img: "images/agua.png",      price: 1.5, allowExtras: false },
+      { id: "b2", type: "drink", name: "Lipton 500ml",        img: "images/lipton.png",    price: 2.0, allowExtras: false },
+      { id: "b3", type: "drink", name: "Gatorade 500ml",      img: "images/gatorade.png",  price: 2.0, allowExtras: false },
+      { id: "b4", type: "drink", name: "Agua pequeña 355ml",  img: "images/agua.png",      price: 1.0, allowExtras: false },
+      { id: "b5", type: "drink", name: "Agua grande 1L",   img: "images/agua.png",      price: 1.5, allowExtras: false },
       { id: "b6", type: "drink", name: "Yukery",        img: "images/yukery.png",    price: 1.0, allowExtras: false },
-      { id: "b7", type: "drink", name: "Bombita",       img: "images/bombita.png",   price: 1.0, allowExtras: false },
+      { id: "b7", type: "drink", name: "Bombita 355ml",       img: "images/bombita.png",   price: 1.0, allowExtras: false },
     ],
   },
 ];

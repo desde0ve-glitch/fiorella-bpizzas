@@ -394,7 +394,7 @@ function updateModalTotal() {
   if (note && freeCount > 0) {
     var remaining = freeCount - freeUsed;
     if (remaining > 0) {
-      note.innerHTML = 'Puedes elegir <strong>' + remaining + '</strong> ingrediente' + (remaining > 1 ? 's' : '') + ' gratis mas';
+      note.innerHTML = 'Puedes elegir <strong>' + remaining + '</strong> ingrediente' + (remaining > 1 ? 's' : '') + ' gratis más';
       note.style.background   = '';
       note.style.borderColor  = '';
       note.style.color        = '';
