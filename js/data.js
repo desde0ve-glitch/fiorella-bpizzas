@@ -209,7 +209,7 @@ const MENU = [
         id: "p5", type: "pizza",
         name: "La Fiore",
         img: "images/pizza-la-fiore.png",
-        desc: "Salsa napole, mozzarella, jamón, pepperoni, tocineta, salchicha polaca, salchichón, borde de queso y salsa de la casa",
+        desc: "Salsa napole, mozzarella, pepperoni, tocineta, salchicha polaca, salchichón, borde de queso y salsa de la casa",
         allowExtras: true,
         sizes: [
           { label: "33 cm", price: 8.0 },
@@ -241,7 +241,7 @@ const MENU = [
         id: "p8", type: "pizza",
         name: "Megapizza",
         img: "images/pizza-megapizza.png",
-        desc: "Salsa napole, mozzarella, jamón, pepperoni, tocineta, chorizo y salchichón — 80 cm de pura delicia",
+        desc: "Salsa napole, mozzarella, jamón, pepperoni, tocineta, chorizo y salchichón (También disponible como vegetariana) — 80 cm de pura delicia",
         allowExtras: true,
         sizes: [
           { label: "80 cm", price: 24.0 },
@@ -268,7 +268,6 @@ const MENU = [
   sizes: [
     { label: "22 cm", price: 6.0  },
     { label: "33 cm", price: 8.0  },
-    { label: "40 cm", price: 15.0 },
   ],
 },
     ],
@@ -328,7 +327,7 @@ const MENU = [
       { id: "b3", type: "drink", name: "Gatorade 500ml",      img: "images/gatorade.png",  price: 2.0, allowExtras: false },
       { id: "b4", type: "drink", name: "Agua pequeña 355ml",  img: "images/agua.png",      price: 1.0, allowExtras: false },
       { id: "b5", type: "drink", name: "Agua grande 1L",   img: "images/agua.png",      price: 1.5, allowExtras: false },
-      { id: "b6", type: "drink", name: "Yukery",        img: "images/yukery.png",    price: 1.0, allowExtras: false },
+      { id: "b6", type: "drink", name: "Yukery 250ml",        img: "images/yukery.png",    price: 1.0, allowExtras: false },
       { id: "b7", type: "drink", name: "Bombita 355ml",       img: "images/bombita.png",   price: 1.0, allowExtras: false },
     ],
   },
