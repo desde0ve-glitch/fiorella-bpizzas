@@ -258,11 +258,17 @@ function renderModal(item) {
       html += '<div class="modal-extras">';
       for (var f = 0; f < freeList.length; f++) {
         var ex = freeList[f];
-        html += '<button class="modal-extra-btn" id="mextra-' + ex.id + '" onclick="modalToggleExtra(\'' + ex.id + '\')">'
-              + '<div class="modal-extra-check" id="mextra-check-' + ex.id + '"></div>'
-              + '<span class="extra-name">' + ex.name + '</span>'
-              + '<span class="extra-price extra-free-tag">Gratis</span>'
-              + '</button>';
+       html += '<div class="modal-extra-row" id="mextra-' + ex.id + '">'
+      + '<button class="modal-extra-btn" onclick="modalToggleExtra(\'' + ex.id + '\')">'
+      + '<span class="extra-name">' + ex.name + '</span>'
+      + '<span class="extra-price" id="mextra-price-' + ex.id + '">+' + formatPrice(ex.price) + '</span>'
+      + '</button>'
+      + '<div class="mextra-qty-controls" id="mextra-qty-' + ex.id + '" style="display:none">'
+      + '<button class="mextra-minus" onclick="extraMinus(\'' + ex.id + '\')">−</button>'
+      + '<span class="mextra-num" id="mextra-check-' + ex.id + '">0</span>'
+      + '<button class="mextra-plus" onclick="modalToggleExtra(\'' + ex.id + '\')">+</button>'
+      + '</div>'
+      + '</div>';
       }
       html += '</div></div>';
  
@@ -324,25 +330,42 @@ function modalToggleExtra(extraId) {
   if (!ex) return;
 
   if (current === 0) {
-    // Agregar primera unidad
     modalState.selectedExtras[extraId] = 1;
-    document.getElementById('mextra-check-' + extraId).textContent = '1';
-    document.getElementById('mextra-' + extraId).classList.add('selected');
+    var numEl = document.getElementById('mextra-check-' + extraId);
+    var qtyEl = document.getElementById('mextra-qty-' + extraId);
+    var rowEl = document.getElementById('mextra-' + extraId);
+    if (numEl) numEl.textContent = '1';
+    if (qtyEl) qtyEl.style.display = 'flex';
+    if (rowEl) rowEl.classList.add('selected');
   } else {
     // Ya tiene al menos 1 — si es extra de $1 en combo con gratis, permitir agregar más
     if (freeCount > 0 && ex.price <= 1.0) {
       modalState.selectedExtras[extraId] = current + 1;
       document.getElementById('mextra-check-' + extraId).textContent = current + 1;
     } else {
-      // Sin gratis o precio mayor a $1 — toggle normal (quitar)
-      modalState.selectedExtras[extraId] = 0;
-      document.getElementById('mextra-check-' + extraId).textContent = '';
-      document.getElementById('mextra-' + extraId).classList.remove('selected');
-    }
+    // Siempre sumar — cualquier extra puede agregarse múltiples veces
+    modalState.selectedExtras[extraId] = current + 1;
+    document.getElementById('mextra-check-' + extraId).textContent = current + 1;
+  }
   }
   updateModalTotal();
 }
-
+function extraMinus(extraId) {
+  var current = (modalState.selectedExtras && modalState.selectedExtras[extraId]) || 0;
+  if (current <= 0) return;
+  modalState.selectedExtras[extraId] = current - 1;
+  var numEl = document.getElementById('mextra-check-' + extraId);
+  var qtyEl = document.getElementById('mextra-qty-' + extraId);
+  var rowEl = document.getElementById('mextra-' + extraId);
+  if (current - 1 === 0) {
+    if (numEl) numEl.textContent = '0';
+    if (qtyEl) qtyEl.style.display = 'none';
+    if (rowEl) rowEl.classList.remove('selected');
+  } else {
+    if (numEl) numEl.textContent = current - 1;
+  }
+  updateModalTotal();
+}
 function updateModalTotal() {
   var item      = findItem(modalState.itemId);
   var si        = modalState.selectedSizeIdx;
