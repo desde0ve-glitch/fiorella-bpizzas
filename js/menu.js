@@ -720,10 +720,11 @@ function setupCartFocusScroll() {
 // ── WHATSAPP ─────────────────────────────────────────────────────────────────
 function sendWA() {
   if (!currentBranch || cartItems.length === 0) return;
-  var name  = document.getElementById('custName').value.trim();
-  var notes = document.getElementById('custNotes').value.trim();
-  var total = 0;
-  var lines = [];
+  var name   = document.getElementById('custName').value.trim();
+  var custId = document.getElementById('custId').value.trim();
+  var notes  = document.getElementById('custNotes').value.trim();
+  var total  = 0;
+  var lines  = [];
 
   for (var i = 0; i < cartItems.length; i++) {
     var entry    = cartItems[i];
@@ -744,9 +745,13 @@ function sendWA() {
     lines.push('• ' + parts.join(' '));
   }
 
-  var orderType = getOrderType();
+  var orderType     = getOrderType();
   var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
-  var greeting = name ? 'Hola, soy *' + name + '*. Quisiera hacer el siguiente pedido:' : 'Hola, quisiera hacer el siguiente pedido:';
+  var idText        = custId ? ' — C.I: *' + custId + '*' : '';
+  var greeting      = name
+    ? 'Hola, soy *' + name + '*' + idText + '. Quisiera hacer el siguiente pedido:'
+    : 'Hola, quisiera hacer el siguiente pedido:';
+
   var msg = '*FIORELLA B\'PIZZAS*\n'
           + 'Sucursal: *' + currentBranch.name + '*\n'
           + currentBranch.addr + '\n'
