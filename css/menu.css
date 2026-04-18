@@ -857,6 +857,7 @@
 }
 
 @media (max-width: 600px) {
+  .cart-drag-handle { display: block; }
   .header-inner { flex-wrap: wrap; padding: 10px 16px; gap: 8px; }
   .header-brand { flex: 1; min-width: 0; gap: 8px; }
   .header-logo h1 { font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -987,11 +988,7 @@
   height: 4px;
   background: rgba(255,255,255,0.25);
   border-radius: var(--radius-full);
-  margin: 0 auto 12px;
+  margin: 0 auto 8px;
   display: none;
-}
-
-@media (max-width: 600px) {
-  .cart-drag-handle { display: block; }
-  .cart-head { flex-direction: column; padding-top: 12px; }
+  cursor: grab;
 }

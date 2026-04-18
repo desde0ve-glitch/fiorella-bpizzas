@@ -579,13 +579,12 @@ function updateCartBadge() {
 }
 
 function initDragHandle() {
-  var panel    = document.getElementById('cartPanel');
-  var handle   = document.querySelector('.cart-drag-handle');
-  if (!handle || window.innerWidth > 600) return;
+  var panel  = document.getElementById('cartPanel');
+  var handle = document.getElementById('cartDragHandle');
+  if (!handle || window.innerWidth > 600 || handle._initialized) return;
+  handle._initialized = true;
 
-  var startY   = 0;
-  var startH   = 0;
-  var dragging = false;
+  var startY = 0, startH = 0, dragging = false;
 
   handle.addEventListener('touchstart', function(e) {
     startY   = e.touches[0].clientY;
@@ -596,8 +595,8 @@ function initDragHandle() {
 
   document.addEventListener('touchmove', function(e) {
     if (!dragging) return;
-    var delta  = startY - e.touches[0].clientY;
-    var newH   = Math.min(Math.max(startH + delta, 200), window.innerHeight * 0.92);
+    var delta = startY - e.touches[0].clientY;
+    var newH  = Math.min(Math.max(startH + delta, 160), window.innerHeight * 0.92);
     panel.style.height = newH + 'px';
   }, { passive: true });
 
@@ -605,12 +604,7 @@ function initDragHandle() {
     if (!dragging) return;
     dragging = false;
     panel.style.transition = '';
-    var currentH = panel.offsetHeight;
-    if (currentH < 180) {
-      closeCart();
-    } else if (currentH < window.innerHeight * 0.35) {
-      panel.style.height = '200px';
-    }
+    if (panel.offsetHeight < 160) closeCart();
   });
 }
 
