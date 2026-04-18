@@ -122,14 +122,19 @@
   </div>
 </div>
     <div class="field">
-      <label for="custName">Tu nombre y cédula (para identificar el pedido)</label>
-      <input type="text" id="custName" placeholder="Ej: Carlos Pérez 20.000.000" autocomplete="given-name">
-    </div>
+  <label for="custName">Nombre completo</label>
+  <input type="text" id="custName" placeholder="Ej: Carlos Pérez" autocomplete="given-name">
+</div>
 
-    <div class="field">
-      <label for="custNotes">Notas adicionales (opcional)</label>
-      <textarea id="custNotes" rows="2" placeholder="Ej: Sin cebolla, para llevar…"></textarea>
-    </div>
+<div class="field">
+  <label for="custId">Cédula de identidad</label>
+  <input type="text" id="custId" placeholder="Ej: V-12.345.678" inputmode="numeric">
+</div>
+
+<div class="field">
+  <label for="custNotes">Notas adicionales (opcional)</label>
+  <textarea id="custNotes" rows="2" placeholder="Ej: Sin cebolla, dirección de entrega…"></textarea>
+</div>
 
     <button class="wa-btn" id="waSendBtn" onclick="sendWA()" disabled>
       <!-- WhatsApp SVG icon -->
