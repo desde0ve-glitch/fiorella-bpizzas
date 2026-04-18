@@ -578,12 +578,49 @@ function updateCartBadge() {
   badge.classList.add('pop');
 }
 
+function initDragHandle() {
+  var panel    = document.getElementById('cartPanel');
+  var handle   = document.querySelector('.cart-drag-handle');
+  if (!handle || window.innerWidth > 600) return;
+
+  var startY   = 0;
+  var startH   = 0;
+  var dragging = false;
+
+  handle.addEventListener('touchstart', function(e) {
+    startY   = e.touches[0].clientY;
+    startH   = panel.offsetHeight;
+    dragging = true;
+    panel.style.transition = 'none';
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    var delta  = startY - e.touches[0].clientY;
+    var newH   = Math.min(Math.max(startH + delta, 200), window.innerHeight * 0.92);
+    panel.style.height = newH + 'px';
+  }, { passive: true });
+
+  document.addEventListener('touchend', function() {
+    if (!dragging) return;
+    dragging = false;
+    panel.style.transition = '';
+    var currentH = panel.offsetHeight;
+    if (currentH < 180) {
+      closeCart();
+    } else if (currentH < window.innerHeight * 0.35) {
+      panel.style.height = '200px';
+    }
+  });
+}
+
 // ── CART PANEL ────────────────────────────────────────────────────────────────
 function openCart() {
   document.getElementById('cartPanel').classList.add('open');
   document.getElementById('cartOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   renderCartItems();
+  initDragHandle();
 }
 
 function closeCart() {
