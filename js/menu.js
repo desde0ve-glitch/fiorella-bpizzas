@@ -615,6 +615,7 @@ function openCart() {
   document.body.style.overflow = 'hidden';
   renderCartItems();
   initDragHandle();
+  setupCartFocusScroll();
 }
 
 function closeCart() {
@@ -704,6 +705,17 @@ function selectOrderType(type) {
 function getOrderType() {
   var btnDelivery = document.getElementById('btnDelivery');
   return btnDelivery && btnDelivery.classList.contains('active') ? 'delivery' : 'pickup';
+}
+function setupCartFocusScroll() {
+  var fields = document.querySelectorAll('.cart-foot input, .cart-foot textarea');
+  for (var i = 0; i < fields.length; i++) {
+    fields[i].addEventListener('focus', function() {
+      var self = this;
+      setTimeout(function() {
+        self.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 350);
+    });
+  }
 }
 // ── WHATSAPP ─────────────────────────────────────────────────────────────────
 function sendWA() {
