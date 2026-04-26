@@ -742,6 +742,10 @@ function renderCartPanel() {
        + '<button class="order-type-btn" id="btnDelivery2" onclick="selectOrderType2(\'delivery\')">🛵 Delivery</button>'
        + '</div></div>'
        + '<div class="field" id="locationField2" style="display:none">'
++ '<label>Dirección de entrega</label>'
++ '<input type="text" id="deliveryAddress2" placeholder="Ej: Av. Las Delicias, Maracay...">'
++ '<p class="location-status" id="locationStatus2">Escribe tu dirección completa</p>'
++ '</div>'
        + '<label>Ubicación de entrega</label>'
        + '<div id="map2" style="width:100%;height:160px;border-radius:12px;margin-bottom:8px;"></div>'
        + '<p class="location-status" id="locationStatus2">Arrastra el pin para ajustar tu ubicación</p>'
@@ -889,10 +893,11 @@ function sendWA2() {
   var btnDelivery2  = document.getElementById('btnDelivery2');
   var orderType     = btnDelivery2 && btnDelivery2.classList.contains('active') ? 'delivery' : 'pickup';
   var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
-  var locationText  = '';
-  if (orderType === 'delivery' && userLocation2) {
-    locationText = '\n📍 Ubicación: https://maps.google.com/?q=' + userLocation2.lat + ',' + userLocation2.lng;
-  }
+  var locationText = '';
+if (orderType === 'delivery' && userLocation2) {
+  var addr2 = (document.getElementById('deliveryAddress2') || {value:''}).value.trim();
+  if (addr2) locationText = '\n📍 Dirección de entrega: ' + addr2;
+}
   var idText   = custId ? ' — C.I: *' + custId + '*' : '';
   var greeting = name
     ? 'Hola, soy *' + name + '*' + idText + '. Quisiera hacer el siguiente pedido:'
@@ -940,9 +945,10 @@ function sendWA() {
 
   var orderType     = getOrderType();
   var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
-var locationText  = '';
-if (orderType === 'delivery' && userLocation) {
-  locationText = '\n📍 Ubicación de entrega: https://maps.google.com/?q=' + userLocation.lat + ',' + userLocation.lng;
+var locationText = '';
+if (orderType === 'delivery') {
+  var addr = (document.getElementById('deliveryAddress') || {value:''}).value.trim();
+  if (addr) locationText = '\n📍 Dirección de entrega: ' + addr;
 }
   var idText        = custId ? ' — C.I: *' + custId + '*' : '';
   var greeting      = name
