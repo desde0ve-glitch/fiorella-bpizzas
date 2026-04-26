@@ -625,11 +625,11 @@ function selectOrderType(type) {
   if (type === 'pickup') {
     btnPickup.classList.add('active');
     btnDelivery.classList.remove('active');
-    locationField.style.display = 'none';
+    if (locationField) locationField.style.display = 'none';
   } else {
     btnDelivery.classList.add('active');
     btnPickup.classList.remove('active');
-    locationField.style.display = 'block';
+    if (locationField) locationField.style.display = 'block';
     setTimeout(function() {
       loadMap();
       if (mapInstance) google.maps.event.trigger(mapInstance, 'resize');
@@ -825,14 +825,11 @@ function selectOrderType2(type) {
   if (type === 'pickup') {
     btnPickup2.classList.add('active');
     btnDelivery2.classList.remove('active');
-    locationField2.style.display = 'none';
+    if (locationField2) locationField2.style.display = 'none';
   } else {
     btnDelivery2.classList.add('active');
     btnPickup2.classList.remove('active');
-    locationField2.style.display = 'block';
-    setTimeout(function() {
-      loadMap2();
-    }, 100);
+    if (locationField2) locationField2.style.display = 'block';
   }
 }
 
