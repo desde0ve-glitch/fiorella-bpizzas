@@ -3,47 +3,344 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fiorella B'Pizzas — Selecciona tu sucursal y haz tu pedido">
-  <meta name="theme-color" content="#0e0302">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <title>Fiorella B'Pizzas — Elige tu Sucursal</title>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/branch.css">
+  <title>Fiorella B'Pizzas</title>
+  <link rel="icon" href="images/isotipo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: #FFECDA;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: -0.333px;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       VEGETALES DE FONDO
+    ══════════════════════════════ */
+    .veg {
+      position: fixed;
+      pointer-events: none;
+      object-fit: contain;
+      z-index: 0;
+    }
+    .veg-basil1  { width: clamp(50px, 7vw, 110px);  left: 3%;  top: 8%;  }
+    .veg-olive1  { width: clamp(50px, 7vw, 120px);  left: -2%; top: 43%; }
+    .veg-tomato1 { width: clamp(50px, 7vw, 120px);  left: 3%;  top: 70%; }
+    .veg-pepper  { width: clamp(55px, 8vw, 140px);  left: 7%;  top: 35%; }
+    .veg-mushroom{ width: clamp(55px, 8vw, 130px);  right: 2%; top: 62%; }
+    .veg-tomato2 { width: clamp(50px, 7vw, 110px);  right: 10%;top: 2%;  transform: rotate(154deg); }
+    .veg-olive2  { width: clamp(50px, 7vw, 110px);  right: 23%;top: 33%; }
+    .veg-basil2  { width: clamp(50px, 7vw, 120px);  right: 7%; top: 30%; transform: rotate(41deg); }
+
+    /* ══════════════════════════════
+       CONTENEDOR PRINCIPAL
+       Escala todo el contenido con clamp
+    ══════════════════════════════ */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(20px, 4vh, 40px) 20px;
+      gap: 0;
+    }
+
+    /* ══════════════════════════════
+       ISOTIPO
+    ══════════════════════════════ */
+    .isotipo-wrap {
+      width: clamp(48px, 5vw, 70px);
+      height: clamp(48px, 5vw, 70px);
+      background: #FFC01D;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: clamp(12px, 2vh, 19px);
+      flex-shrink: 0;
+    }
+    .isotipo-wrap img {
+      width: 83%;
+      height: 83%;
+      object-fit: contain;
+    }
+
+    /* ══════════════════════════════
+       TEXTOS
+    ══════════════════════════════ */
+    .titulo {
+      font-size: clamp(16px, 1.8vw, 24px);
+      font-weight: 600;
+      color: #660100;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: clamp(3px, 0.6vh, 5px);
+    }
+
+    .subtitulo {
+      font-size: clamp(10px, 1.1vw, 14px);
+      font-weight: 400;
+      color: #D63D3B;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: clamp(12px, 2.5vh, 19px);
+    }
+
+    /* ══════════════════════════════
+       ZONA CARRUSEL
+    ══════════════════════════════ */
+    .carousel-zone {
+      display: flex;
+      align-items: center;
+      gap: clamp(14px, 2.5vw, 35px);
+      margin-bottom: clamp(20px, 4.5vh, 37px);
+    }
+
+    .arrow-btn {
+      width: clamp(22px, 2.3vw, 32px);
+      height: clamp(22px, 2.3vw, 32px);
+      min-width: clamp(22px, 2.3vw, 32px);
+      background: #343836;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .arrow-btn:hover  { background: #4a4f4d; }
+    .arrow-btn:active { transform: scale(0.94); }
+    .arrow-btn svg {
+      width: clamp(5px, 0.5vw, 7px);
+      height: auto;
+    }
+
+    .carousel-viewport {
+      width: clamp(150px, 16vw, 225px);
+      height: clamp(186px, 20vw, 279px);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ══════════════════════════════
+       CARD SUCURSAL
+    ══════════════════════════════ */
+    .branch-card {
+      /* el ancho coincide exactamente con el viewport */
+      min-width: clamp(150px, 16vw, 225px);
+      height: clamp(186px, 20vw, 279px);
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .branch-rect {
+  position: absolute;
+  inset: 0;
+  background: #901A07;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 192, 29, 0.6);
+  box-shadow:
+    1px 1px 1px 1px rgba(255, 192, 29, 0.35),
+    inset 0 0 2px 2px rgba(255, 192, 29, 0.15);
+}
+
+    /* Ícono — proporción: left≈15%, top≈2.9%, width≈70% */
+    .branch-icon {
+      position: absolute;
+      left: 15%;
+      top: 2.9%;
+      width: 70%;
+      height: 57%; /* cubre hasta aprox y=166/279 */
+      object-fit: contain;
+      z-index: 1;
+    }
+
+    /* Nombre — proporción top≈59.5% */
+    .branch-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 59.5%;
+      font-size: clamp(14px, 1.8vw, 26px);
+      font-weight: 500;
+      color: #FFFFFF;
+      text-align: center;
+      line-height: 1.5;
+      white-space: nowrap;
+      padding: 0 8px;
+    }
+
+    /* Info — proporción top≈74.5% */
+    .branch-info {
+      position: absolute;
+      left: 13%;
+      right: 13%;
+      top: 74.5%;
+      font-size: clamp(6px, 0.75vw, 10px);
+      font-weight: 400;
+      color: #FFBCBC;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+     .branch-circle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 11%;
+  width: 60%;
+  aspect-ratio: 1 / 1;
+  background: #FF1616;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    .footer-msg {
+      font-size: clamp(11px, 1.2vw, 16px);
+      font-weight: 400;
+      color: #000000;
+      text-align: center;
+      line-height: 1.5;
+      max-width: clamp(220px, 24vw, 331px);
+      margin-bottom: clamp(10px, 2vh, 18px);
+    }
+
+    .buen-provecho {
+      font-size: clamp(13px, 1.5vw, 20px);
+      font-weight: 600;
+      color: #000000;
+      text-align: center;
+      margin-bottom: clamp(10px, 2vh, 16px);
+    }
+
+    .logo-fiorella {
+      width: clamp(90px, 10vw, 142px);
+      height: auto;
+      object-fit: contain;
+    }
+
+  </style>
 </head>
 <body>
 
-<div class="branch-page">
+  <!-- VEGETALES DE FONDO -->
+  <img class="veg veg-basil1"   src="images/basil1.png"   alt="">
+  <img class="veg veg-olive1"   src="images/olive1.png"   alt="">
+  <img class="veg veg-tomato1"  src="images/tomato1.png"  alt="">
+  <img class="veg veg-pepper"   src="images/pepper.png"   alt="">
+  <img class="veg veg-mushroom" src="images/mushroom.png" alt="">
+  <img class="veg veg-tomato2"  src="images/tomato2.png"  alt="">
+  <img class="veg veg-olive2"   src="images/olive2.png"   alt="">
+  <img class="veg veg-basil2"   src="images/basil2.png"   alt="">
 
-  <!-- HERO -->
-  <div class="branch-hero">
-    <div class="brand-logo" aria-hidden="true">
-      <img src="images/logo.png" alt="Logo Fiorella B'Pizzas">
+  <!-- CONTENIDO -->
+  <div class="page">
+
+    <div class="isotipo-wrap">
+      <img src="images/isotipo.png" alt="Fiorella B'Pizzas">
     </div>
-    <h1 class="brand-name fade-in">Fiorella <em>B'Pizzas</em></h1>
-    <p class="brand-tagline fade-in">La mejor pizza de Maracay</p>
+
+    <p class="titulo">¿Ya sabes donde pedir?</p>
+    <p class="subtitulo">encuentra tu sucursal más cercana</p>
+
+    <div class="carousel-zone">
+      <button class="arrow-btn" onclick="prevBranch()" aria-label="Anterior">
+        <svg viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 1L1 6L6 11" stroke="#FFC01D" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carouselTrack"></div>
+      </div>
+
+      <button class="arrow-btn" onclick="nextBranch()" aria-label="Siguiente">
+        <svg viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L6 6L1 11" stroke="#FFC01D" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="footer-msg">Tu pedido será enviado por WhatsApp directamente a la sucursal elegida</p>
+    <p class="buen-provecho">¡Buen provecho!</p>
+    <img class="logo-fiorella" src="images/logo-text.png" alt="Fiorella B'Pizzas">
+
   </div>
 
-  <!-- CONTENT -->
-  <main class="branch-content">
-    <div class="branch-prompt">
-      <h2>¿Desde dónde vas a pedir?</h2>
-      <p>Selecciona la sucursal más cercana a ti</p>
-    </div>
+  <script src="js/data.js"></script>
+  <script>
+    var currentIdx = 0;
 
-    <div class="branch-list" id="branchList" role="list">
-      <!-- Rendered by branch.js -->
-    </div>
+    function cardWidth() {
+      return document.querySelector('.carousel-viewport').offsetWidth;
+    }
 
-    <p class="branch-footer-note">
-      Tu pedido será enviado por WhatsApp directamente a la sucursal elegida.<br>
-      ¡Buen provecho!
-    </p>
-  </main>
+    function renderCards() {
+      var track = document.getElementById('carouselTrack');
+      var html  = '';
+      for (var i = 0; i < BRANCHES.length; i++) {
+        var b      = BRANCHES[i];
+        var phones = b.phones.map(function(p) {
+          var n = '0' + p.substring(2);
+          return n.replace(/^(\d{4})(\d{3})(\d{2})(\d{2})$/, '$1 - $2 $3 $4');
+        }).join('<br>');
 
-</div>
+        html += '<div class="branch-card" onclick="selectBranch(\'' + b.id + '\')">'
+      +   '<div class="branch-rect">'
+      +     '<div class="branch-circle"></div>'
+      +     '<img class="branch-icon" src="images/pizzeria.png" alt="">'
+      +     '<div class="branch-name">' + b.name + '</div>'
+      +     '<div class="branch-info">' + b.addr + '<br>' + phones + '</div>'
+      +   '</div>'
+      + '</div>';
+      }
+      track.innerHTML = html;
+    }
 
-<!-- DATA + LOGIC -->
-<script src="js/data.js"></script>
-<script src="js/branch.js"></script>
+    function updateCarousel() {
+      document.getElementById('carouselTrack').style.transform =
+        'translateX(-' + (currentIdx * cardWidth()) + 'px)';
+    }
+
+    function prevBranch() {
+      currentIdx = (currentIdx - 1 + BRANCHES.length) % BRANCHES.length;
+      updateCarousel();
+    }
+
+    function nextBranch() {
+      currentIdx = (currentIdx + 1) % BRANCHES.length;
+      updateCarousel();
+    }
+
+    function selectBranch(id) {
+      sessionStorage.setItem('selectedBranch', id);
+      window.location.href = 'menu.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCards);
+    window.addEventListener('resize', updateCarousel);
+  </script>
 </body>
 </html>
