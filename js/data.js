@@ -70,7 +70,7 @@ const MENU = [
       {
         id: "c1", type: "combo",
         name: "Combo 1",
-        img: null,
+        img: "images/combo1.png",
         price: 9,
         allowExtras: true,
         freeExtras: 1,
@@ -79,7 +79,7 @@ const MENU = [
       {
         id: "c2", type: "combo",
         name: "Combo 2",
-        img: null,
+        img: "images/combo2.png",
         price: 16,
         allowExtras: true,
         freeExtras: 2,
@@ -88,7 +88,7 @@ const MENU = [
       {
         id: "c3", type: "combo",
         name: "Combo 3",
-        img: null,
+        img: "images/combo3.png",
         price: 19,
         allowExtras: true,
         desc: "3 Pizzas Margarita 40cm + 1 Coca-Cola 1.5L",
@@ -96,7 +96,7 @@ const MENU = [
       {
         id: "c4", type: "combo",
         name: "Combo 4",
-        img: null,
+        img: "images/combo4.png",
         price: 25,
         allowExtras: true,
         desc: "4 Pizzas Margarita 40cm + 1 Coca-Cola 1.5L",
@@ -104,7 +104,7 @@ const MENU = [
       {
         id: "c5", type: "combo",
         name: "Combo 5",
-        img: null,
+        img: "images/combo5.png",
         price: 23,
         allowExtras: true,
         desc: "2 Pizzas Margarita 40cm + 1 Pizza Charcutera 40cm + 1 Coca-Cola 1.5L",
@@ -112,7 +112,7 @@ const MENU = [
       {
         id: "c6", type: "combo",
         name: "Combo 6",
-        img: null,
+        img: "images/combo6.png",
         price: 26,
         allowExtras: true,
         desc: "1 Pizza Vegetariana + 1 Pizza Charcutera + 1 Pizza Caprese (todas 40cm) + 1 Coca-Cola 1.5L",
@@ -120,7 +120,7 @@ const MENU = [
       {
         id: "c7", type: "combo",
         name: "Combo 7",
-        img: null,
+        img: "images/combo7.png",
         price: 26,
         allowExtras: true,
         desc: "3 Pizzas Charcutera 40cm + 1 Coca-Cola 1.5L",
@@ -128,7 +128,7 @@ const MENU = [
       {
         id: "c8", type: "combo",
         name: "Combo 8",
-        img: null,
+        img: "images/combo8.png",
         price: 13,
         allowExtras: true,
         desc: "2 Pizzas Margarita 40cm",
@@ -136,7 +136,7 @@ const MENU = [
       {
         id: "c9", type: "combo",
         name: "Combo 9",
-        img: null,
+        img: "images/combo9.png",
         price: 14,
         allowExtras: true,
         desc: "2 Pizzas 33cm (salsa napole, queso, jamón, tocineta, salchichón y maíz) + 1 Coca-Cola 1.5L",
@@ -144,7 +144,7 @@ const MENU = [
       {
         id: "c10", type: "combo",
         name: "Combo 10",
-        img: null,
+        img: "images/combo10.png",
         price: 21,
         allowExtras: true,
         desc: "2 Pizzas Charcutera 40cm + 1 Coca-Cola 1.5L",
