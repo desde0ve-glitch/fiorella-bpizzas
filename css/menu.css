@@ -1141,11 +1141,3 @@ input, textarea { font-family: var(--font); }
   .cat-fab { display: flex; }
 }
 
-#deliveryAddress, #deliveryAddress2 {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,192,29,0.4);
-  color: #FFC01D;
-}
-#deliveryAddress::placeholder, #deliveryAddress2::placeholder {
-  color: rgba(255,192,29,0.7);
-}
