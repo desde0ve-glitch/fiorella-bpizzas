@@ -545,7 +545,8 @@ input, textarea { font-family: var(--font); }
 .drink-card:hover { transform: translateY(-2px); }
 
 .drink-card-img {
-  width: 100px; height: 100px;
+  width: 70%;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
   display: flex; align-items: center; justify-content: center;
@@ -1045,7 +1046,7 @@ input, textarea { font-family: var(--font); }
   .products-area { padding: 14px; border-radius: 16px; }
   .pizza-card-img { height: 180px; }
   .pizza-card-name { font-size: 1.4rem; }
-  .drinks-grid { grid-template-columns: repeat(2, 1fr); }
+  .drinks-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .cart-fab { display: flex; }
   .cat-fab { display: flex; }
   .header-btn.btn-cart { display: none; }
