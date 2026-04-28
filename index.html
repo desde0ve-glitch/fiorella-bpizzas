@@ -33,7 +33,7 @@
     .veg-pepper  { width: clamp(55px, 8vw, 140px);  left: 7%;  top: 35%; }
     .veg-mushroom{ width: clamp(55px, 8vw, 130px);  right: 2%; top: 62%; }
     .veg-tomato2 { width: clamp(50px, 7vw, 110px);  right: 10%;top: 2%;  transform: rotate(154deg); }
-    .veg-olive2  { width: clamp(50px, 7vw, 110px);  right: 23%;top: 33%; }
+    .veg-olive2  { width: clamp(50px, 7vw, 110px);  right: 23%;top: 8%; }
     .veg-basil2  { width: clamp(50px, 7vw, 120px);  right: 7%; top: 30%; transform: rotate(41deg); }
 
     /* ══════════════════════════════
@@ -238,6 +238,35 @@
       height: auto;
       object-fit: contain;
     }
+
+    @media (max-width: 600px) {
+  .page {
+    padding: 16px;
+    gap: 0;
+    justify-content: center;
+  }
+  .isotipo-wrap {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 8px;
+  }
+  .titulo { font-size: 16px; margin-bottom: 2px; }
+  .subtitulo { font-size: 11px; margin-bottom: 10px; }
+  .carousel-zone { gap: 10px; margin-bottom: 14px; }
+  .carousel-viewport {
+    width: 180px;
+    height: 220px;
+  }
+  .branch-card { min-width: 180px; height: 220px; }
+  .branch-name { font-size: 18px; }
+  .branch-info { font-size: 7px; }
+  .arrow-btn { width: 26px; height: 26px; }
+  .footer-msg { font-size: 11px; margin-bottom: 8px; }
+  .buen-provecho { font-size: 14px; margin-bottom: 8px; }
+  .logo-fiorella { width: 90px; }
+  .veg { opacity: 0.4; }
+  .veg-pepper, .veg-olive2, .veg-olive1 { display: none; }
+}
 
   </style>
 </head>

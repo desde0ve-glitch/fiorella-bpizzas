@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════
-//  menu.js — Fiorella B'Pizzas (nuevo diseño)
+//  menu.js — Fiorella B'Pizzas
 // ═══════════════════════════════════════════
 
 var currentBranch = null;
@@ -7,6 +7,14 @@ var cartItems     = [];
 var modalState    = null;
 var selectedSizes = {};
 var currentCat    = 'combos';
+
+// Variables del mapa — declaradas UNA sola vez
+var userLocation  = null;
+var mapInstance   = null;
+var mapMarker     = null;
+var mapInstance2  = null;
+var mapMarker2    = null;
+var userLocation2 = null;
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
@@ -20,7 +28,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('cartBranchName').textContent = currentBranch.name;
 
   renderCatNav();
-  showCategory('combos');
+
+  if (window.innerWidth <= 700) {
+    renderAllCategories();
+  } else {
+    showCategory('combos');
+  }
 
   document.getElementById('modalOverlay').addEventListener('click', function(e){
     if (e.target === e.currentTarget) closeModal();
@@ -58,11 +71,11 @@ function getCartQty(key) {
 function renderCatNav() {
   var nav = document.getElementById('catNav');
   var icons = {
-  combos:  '<img class="cat-icon" src="images/icono-combos.png" alt="">',
-  pizzas:  '<img class="cat-icon" src="images/icono-pizzas.png" alt="">',
-  otros:   '<img class="cat-icon" src="images/icono-calzones.png" alt="">',
-  bebidas: '<img class="cat-icon" src="images/icono-bebidas.png" alt="">',
-};
+    combos:  '<img class="cat-icon" src="images/icono-combos.png" alt="">',
+    pizzas:  '<img class="cat-icon" src="images/icono-pizzas.png" alt="">',
+    otros:   '<img class="cat-icon" src="images/icono-calzones.png" alt="">',
+    bebidas: '<img class="cat-icon" src="images/icono-bebidas.png" alt="">',
+  };
   var html = '';
   for (var i = 0; i < MENU.length; i++) {
     var cat = MENU[i];
@@ -72,34 +85,51 @@ function renderCatNav() {
           + '</button>';
   }
   html += '<button class="cat-btn" id="navbtn-ordenes" onclick="showCategory(\'ordenes\')">'
-      + '<svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>'
-      + 'Mi pedido'
-      + '</button>';
+        + '<svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>'
+        + 'Mi pedido'
+        + '</button>';
   nav.innerHTML = html;
 }
 
+// ── SHOW CATEGORY ─────────────────────────────────────────────────────────────
 function showCategory(catId) {
   currentCat = catId;
-  // Actualizar nav
+
   var btns = document.querySelectorAll('.cat-btn');
   for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
   var nb = document.getElementById('navbtn-' + catId);
   if (nb) nb.classList.add('active');
+
+  // En móvil hacer scroll a la sección
+  if (window.innerWidth <= 700 && catId !== 'ordenes') {
+    var target = document.getElementById('grid-' + catId);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    renderAllCategories();
+    setTimeout(function() {
+      var t = document.getElementById('grid-' + catId);
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+    return;
+  }
+
+  // Mi pedido
   if (catId === 'ordenes') {
-  var hero = document.getElementById('heroBanner');
-  hero.classList.add('hidden');
-  var area = document.getElementById('productsArea');
-  area.innerHTML = renderCartPanel();
-  updateCartInline();
-  return;
-}
+    var hero = document.getElementById('heroBanner');
+    hero.classList.add('hidden');
+    var area = document.getElementById('productsArea');
+    area.innerHTML = renderCartPanel();
+    updateCartInline();
+    return;
+  }
 
   // Hero banner solo en combos
   var hero = document.getElementById('heroBanner');
   if (catId === 'combos') hero.classList.remove('hidden');
   else hero.classList.add('hidden');
 
-  // Renderizar productos
   var area = document.getElementById('productsArea');
   var cat = null;
   for (var j = 0; j < MENU.length; j++) {
@@ -122,6 +152,59 @@ function showCategory(catId) {
     html += '</div>';
   }
   area.innerHTML = html;
+}
+
+// ── RENDER ALL CATEGORIES (móvil) ────────────────────────────────────────────
+function renderAllCategories() {
+  var hero = document.getElementById('heroBanner');
+  hero.classList.remove('hidden');
+  var area = document.getElementById('productsArea');
+  var html = '';
+  for (var i = 0; i < MENU.length; i++) {
+    var cat = MENU[i];
+    html += '<div class="cat-section">'
+          + '<h3 class="cat-section-title">' + cat.name + '</h3>';
+    if (cat.id === 'combos') {
+      html += '<div class="combos-grid" id="grid-combos">';
+      for (var k = 0; k < cat.items.length; k++) html += renderComboCard(cat.items[k]);
+      html += '</div>';
+    } else if (cat.id === 'bebidas') {
+      html += '<div class="drinks-grid" id="grid-bebidas">';
+      for (var k = 0; k < cat.items.length; k++) html += renderDrinkCard(cat.items[k]);
+      html += '</div>';
+    } else {
+      html += '<div class="pizza-grid" id="grid-' + cat.id + '">';
+      for (var k = 0; k < cat.items.length; k++) html += renderPizzaCard(cat.items[k]);
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  area.innerHTML = html;
+  setTimeout(initScrollSpy, 200);
+
+  // Activar primer botón
+  var btns = document.querySelectorAll('.cat-btn');
+  for (var b = 0; b < btns.length; b++) btns[b].classList.remove('active');
+  var nb = document.getElementById('navbtn-combos');
+  if (nb) nb.classList.add('active');
+}
+
+// ── SCROLL SPY ────────────────────────────────────────────────────────────────
+function initScrollSpy() {
+  var grids = document.querySelectorAll('[id^="grid-"]');
+  if (!grids.length) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var catId = entry.target.id.replace('grid-', '');
+        var btns = document.querySelectorAll('.cat-btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+        var nb = document.getElementById('navbtn-' + catId);
+        if (nb) nb.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  grids.forEach(function(grid) { observer.observe(grid); });
 }
 
 // ── COMBO CARD ────────────────────────────────────────────────────────────────
@@ -286,8 +369,7 @@ function renderModal(item) {
       html += '<div class="modal-free-note" id="modalFreeNote">Puedes elegir hasta <strong>' + freeCount + '</strong> ingrediente' + (freeCount > 1 ? 's' : '') + ' gratis</div>';
       html += '<div class="modal-extras">';
       for (var f = 0; f < freeList.length; f++) {
-        var ex = freeList[f];
-        html += buildExtraRow(ex, 'Gratis', true);
+        html += buildExtraRow(freeList[f], 'Gratis', true);
       }
       html += '</div></div>';
       if (paidList.length > 0) {
@@ -341,7 +423,6 @@ function modalToggleExtra(extraId) {
     if (EXTRAS[j].id === extraId) { ex = EXTRAS[j]; break; }
   }
   if (!ex) return;
-
   if (current === 0) {
     modalState.selectedExtras[extraId] = 1;
     var numEl = document.getElementById('mextra-check-' + extraId);
@@ -393,7 +474,6 @@ function updateModalTotal() {
     }
   }
 
-  // Actualizar etiquetas
   for (var f = 0; f < EXTRAS.length; f++) {
     var ef = EXTRAS[f];
     var tag = document.getElementById('mextra-' + ef.id);
@@ -517,9 +597,9 @@ function refreshCard(itemId) {
   if (!card) return;
   var cat = findCategory(itemId);
   var html = '';
-  if (cat.id === 'combos')  html = renderComboCard(item);
+  if (cat.id === 'combos')       html = renderComboCard(item);
   else if (cat.id === 'bebidas') html = renderDrinkCard(item);
-  else html = renderPizzaCard(item);
+  else                           html = renderPizzaCard(item);
   card.outerHTML = html;
 }
 
@@ -566,7 +646,6 @@ function renderCartItems() {
     var linePrice = unitPrice * entry.qty;
     total    += linePrice;
     totalQty += entry.qty;
-
     var metaParts = [];
     if (entry.sizeLabel) metaParts.push(entry.sizeLabel);
     if (entry.extras.length) {
@@ -578,7 +657,6 @@ function renderCartItems() {
     var qtyStr   = entry.qty > 1 ? ' (' + entry.qty + ' x ' + formatPrice(unitPrice) + ')' : '';
     var imgHTML  = entry.img ? '<img src="' + entry.img + '" alt="' + entry.name + '" onerror="this.style.display=\'none\'">' : '';
     var ph       = '<div class="ci-img-placeholder"' + (entry.img ? ' style="display:none"' : '') + '>🍕</div>';
-
     html += '<div class="ci">'
           + '<div class="ci-img">' + imgHTML + ph + '</div>'
           + '<div class="ci-info">'
@@ -636,92 +714,118 @@ function selectOrderType(type) {
     }, 100);
   }
 }
+
+function selectOrderType2(type) {
+  var btnPickup2     = document.getElementById('btnPickup2');
+  var btnDelivery2   = document.getElementById('btnDelivery2');
+  var locationField2 = document.getElementById('locationField2');
+  if (type === 'pickup') {
+    btnPickup2.classList.add('active');
+    btnDelivery2.classList.remove('active');
+    if (locationField2) locationField2.style.display = 'none';
+  } else {
+    btnDelivery2.classList.add('active');
+    btnPickup2.classList.remove('active');
+    if (locationField2) locationField2.style.display = 'block';
+    setTimeout(function() { loadMap2(); }, 100);
+  }
+}
+
 function getOrderType() {
   var btnDelivery = document.getElementById('btnDelivery');
   return btnDelivery && btnDelivery.classList.contains('active') ? 'delivery' : 'pickup';
 }
 
-// ── WHATSAPP ──────────────────────────────────────────────────────────────────
-var userLocation = null;
-
-function getLocation() {
-  var btn    = document.getElementById('locationBtn');
-  var status = document.getElementById('locationStatus');
-  
-  if (!navigator.geolocation) {
-    status.textContent = 'Tu navegador no soporta geolocalización.';
-    return;
-  }
-
-  btn.textContent = '⏳ Obteniendo ubicación...';
-  status.textContent = '';
-
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      userLocation = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
-      };
-      btn.textContent = '✅ Ubicación obtenida';
-      btn.classList.add('got-location');
-      status.textContent = 'Lat: ' + userLocation.lat.toFixed(5) + ', Lng: ' + userLocation.lng.toFixed(5);
-    },
-    function(err) {
-      btn.textContent = '📍 Usar mi ubicación actual';
-      status.textContent = 'No se pudo obtener la ubicación. Permite el acceso en tu navegador.';
-      userLocation = null;
-    }
-  );
-}
-var userLocation = null;
-var mapInstance  = null;
-var mapMarker    = null;
-
-function initMap() {
-  // Se llama automáticamente cuando carga la API de Google
-}
+// ── GOOGLE MAPS ───────────────────────────────────────────────────────────────
+function initMap() {}
 
 function loadMap() {
-  if (mapInstance) return; // ya está cargado
-
-  var defaultPos = { lat: 10.2442, lng: -67.5947 }; // Aragua, Venezuela
-
+  if (mapInstance) return;
+  var defaultPos = { lat: 10.2442, lng: -67.5947 };
   mapInstance = new google.maps.Map(document.getElementById('map'), {
-    center: defaultPos,
-    zoom: 15,
-    disableDefaultUI: true,
-    zoomControl: true,
+    center: defaultPos, zoom: 14,
+    disableDefaultUI: true, zoomControl: true,
   });
-
   mapMarker = new google.maps.Marker({
-    position: defaultPos,
-    map: mapInstance,
-    draggable: true,
-    title: 'Tu ubicación',
+    position: defaultPos, map: mapInstance, draggable: true, title: 'Tu ubicación',
   });
-
   userLocation = defaultPos;
 
-  // Intentar centrar en ubicación real del usuario
+  var input = document.getElementById('mapSearch');
+  if (input) {
+    var autocomplete = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: 've' },
+      fields: ['geometry', 'name'],
+    });
+    autocomplete.addListener('place_changed', function() {
+      var place = autocomplete.getPlace();
+      if (!place.geometry) return;
+      mapInstance.setCenter(place.geometry.location);
+      mapInstance.setZoom(16);
+      mapMarker.setPosition(place.geometry.location);
+      userLocation = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+    });
+  }
+
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(pos) {
       var realPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       mapInstance.setCenter(realPos);
       mapMarker.setPosition(realPos);
       userLocation = realPos;
-      document.getElementById('locationStatus').textContent = 'Arrastra el pin para ajustar tu ubicación';
-    }, function() {
-      document.getElementById('locationStatus').textContent = 'No se pudo obtener tu ubicación. Mueve el pin manualmente.';
     });
   }
 
-  // Actualizar ubicación cuando se arrastra el pin
   mapMarker.addListener('dragend', function() {
     var pos = mapMarker.getPosition();
     userLocation = { lat: pos.lat(), lng: pos.lng() };
-    document.getElementById('locationStatus').textContent = '📍 Ubicación seleccionada';
   });
 }
+
+function loadMap2() {
+  if (mapInstance2) return;
+  var defaultPos = { lat: 10.2442, lng: -67.5947 };
+  mapInstance2 = new google.maps.Map(document.getElementById('map2'), {
+    center: defaultPos, zoom: 14,
+    disableDefaultUI: true, zoomControl: true,
+  });
+  mapMarker2 = new google.maps.Marker({
+    position: defaultPos, map: mapInstance2, draggable: true,
+  });
+  userLocation2 = defaultPos;
+
+  var input2 = document.getElementById('mapSearch2');
+  if (input2) {
+    var autocomplete2 = new google.maps.places.Autocomplete(input2, {
+      componentRestrictions: { country: 've' },
+      fields: ['geometry', 'name'],
+    });
+    autocomplete2.addListener('place_changed', function() {
+      var place = autocomplete2.getPlace();
+      if (!place.geometry) return;
+      mapInstance2.setCenter(place.geometry.location);
+      mapInstance2.setZoom(16);
+      mapMarker2.setPosition(place.geometry.location);
+      userLocation2 = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+    });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      var realPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      mapInstance2.setCenter(realPos);
+      mapMarker2.setPosition(realPos);
+      userLocation2 = realPos;
+    });
+  }
+
+  mapMarker2.addListener('dragend', function() {
+    var pos = mapMarker2.getPosition();
+    userLocation2 = { lat: pos.lat(), lng: pos.lng() };
+  });
+}
+
+// ── CART PANEL INLINE (Mi pedido) ─────────────────────────────────────────────
 function renderCartPanel() {
   return '<div class="cart-inline">'
        + '<div class="cart-inline-head">'
@@ -742,13 +846,8 @@ function renderCartPanel() {
        + '<button class="order-type-btn" id="btnDelivery2" onclick="selectOrderType2(\'delivery\')">🛵 Delivery</button>'
        + '</div></div>'
        + '<div class="field" id="locationField2" style="display:none">'
-+ '<label>Dirección de entrega</label>'
-+ '<input type="text" id="deliveryAddress2" placeholder="Ej: Av. Las Delicias, Maracay...">'
-+ '<p class="location-status" id="locationStatus2">Escribe tu dirección completa</p>'
-+ '</div>'
-       + '<label>Ubicación de entrega</label>'
+       + '<input type="text" id="mapSearch2" placeholder="🔍 Busca tu dirección...">'
        + '<div id="map2" style="width:100%;height:160px;border-radius:12px;margin-bottom:8px;"></div>'
-       + '<p class="location-status" id="locationStatus2">Arrastra el pin para ajustar tu ubicación</p>'
        + '</div>'
        + '<div class="field"><label for="custName2">Nombre completo</label>'
        + '<input type="text" id="custName2" placeholder="Ej: Carlos Pérez"></div>'
@@ -765,10 +864,10 @@ function renderCartPanel() {
 }
 
 function updateCartInline() {
-  var itemsEl  = document.getElementById('cartInlineItems');
-  var totalEl  = document.getElementById('cartInlineTotal');
-  var subEl    = document.getElementById('cartInlineSub');
-  var sendBtn  = document.getElementById('waSendBtn2');
+  var itemsEl = document.getElementById('cartInlineItems');
+  var totalEl = document.getElementById('cartInlineTotal');
+  var subEl   = document.getElementById('cartInlineSub');
+  var sendBtn = document.getElementById('waSendBtn2');
   if (!itemsEl) return;
 
   if (cartItems.length === 0) {
@@ -818,55 +917,64 @@ function updateCartInline() {
   if (sendBtn) sendBtn.disabled    = false;
 }
 
-function selectOrderType2(type) {
-  var btnPickup2     = document.getElementById('btnPickup2');
-  var btnDelivery2   = document.getElementById('btnDelivery2');
-  var locationField2 = document.getElementById('locationField2');
-  if (type === 'pickup') {
-    btnPickup2.classList.add('active');
-    btnDelivery2.classList.remove('active');
-    if (locationField2) locationField2.style.display = 'none';
-  } else {
-    btnDelivery2.classList.add('active');
-    btnPickup2.classList.remove('active');
-    if (locationField2) locationField2.style.display = 'block';
-  }
-}
+// ── WHATSAPP ──────────────────────────────────────────────────────────────────
+function sendWA() {
+  if (!currentBranch || cartItems.length === 0) return;
+  var name   = document.getElementById('custName').value.trim();
+  var custId = document.getElementById('custId').value.trim();
+  var notes  = document.getElementById('custNotes').value.trim();
+  var total  = 0;
+  var lines  = [];
 
-var mapInstance2 = null;
-var mapMarker2   = null;
-var userLocation2 = null;
-
-function loadMap2() {
-  if (mapInstance2) return;
-  var defaultPos = { lat: 10.2442, lng: -67.5947 };
-  mapInstance2 = new google.maps.Map(document.getElementById('map2'), {
-    center: defaultPos, zoom: 15,
-    disableDefaultUI: true, zoomControl: true,
-  });
-  mapMarker2 = new google.maps.Marker({
-    position: defaultPos, map: mapInstance2, draggable: true,
-  });
-  userLocation2 = defaultPos;
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      var realPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      mapInstance2.setCenter(realPos);
-      mapMarker2.setPosition(realPos);
-      userLocation2 = realPos;
-    });
+  for (var i = 0; i < cartItems.length; i++) {
+    var entry    = cartItems[i];
+    var extraSum = 0;
+    for (var j = 0; j < entry.extras.length; j++) extraSum += entry.extras[j].price;
+    var unitPrice = entry.basePrice + extraSum;
+    var lineTotal = unitPrice * entry.qty;
+    total += lineTotal;
+    var parts = [entry.name];
+    if (entry.sizeLabel) parts.push('(' + entry.sizeLabel + ')');
+    if (entry.extras.length) {
+      var names = [];
+      for (var k = 0; k < entry.extras.length; k++) names.push(entry.extras[k].name);
+      parts.push('+ ' + names.join(', '));
+    }
+    parts.push('x' + entry.qty + ' — ' + formatPrice(lineTotal));
+    lines.push('• ' + parts.join(' '));
   }
-  mapMarker2.addListener('dragend', function() {
-    var pos = mapMarker2.getPosition();
-    userLocation2 = { lat: pos.lat(), lng: pos.lng() };
-  });
+
+  var orderType     = getOrderType();
+  var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
+  var locationText  = '';
+  if (orderType === 'delivery' && userLocation) {
+    locationText = '\n📍 Ubicación de entrega: https://maps.google.com/?q=' + userLocation.lat + ',' + userLocation.lng;
+  }
+  var idText   = custId ? ' — C.I: *' + custId + '*' : '';
+  var greeting = name
+    ? 'Hola, soy *' + name + '*' + idText + '. Quisiera hacer el siguiente pedido:'
+    : 'Hola, quisiera hacer el siguiente pedido:';
+
+  var msg = '*FIORELLA B\'PIZZAS*\n'
+          + 'Sucursal: *' + currentBranch.name + '*\n'
+          + currentBranch.addr + '\n'
+          + '─────────────────────────\n'
+          + greeting + '\n\n'
+          + lines.join('\n')
+          + '\n─────────────────────────\n'
+          + '*Total estimado: ' + formatPrice(total) + '*\n'
+          + 'Tipo de pedido: *' + orderTypeText + '*\n'
+          + locationText
+          + (notes ? '\nNotas: ' + notes : '')
+          + '\n\n¡Muchas gracias!';
+
+  window.open('https://wa.me/' + currentBranch.phones[0] + '?text=' + encodeURIComponent(msg), '_blank');
 }
 
 function sendWA2() {
-  var name   = (document.getElementById('custName2')  || {}).value || '';
-  var custId = (document.getElementById('custId2')    || {}).value || '';
-  var notes  = (document.getElementById('custNotes2') || {}).value || '';
-  name   = name.trim(); custId = custId.trim(); notes = notes.trim();
+  var name   = (document.getElementById('custName2')  || {value:''}).value.trim();
+  var custId = (document.getElementById('custId2')    || {value:''}).value.trim();
+  var notes  = (document.getElementById('custNotes2') || {value:''}).value.trim();
 
   if (!currentBranch || cartItems.length === 0) return;
   var total = 0, lines = [];
@@ -887,18 +995,19 @@ function sendWA2() {
     parts.push('x' + entry.qty + ' — ' + formatPrice(lineTotal));
     lines.push('• ' + parts.join(' '));
   }
+
   var btnDelivery2  = document.getElementById('btnDelivery2');
   var orderType     = btnDelivery2 && btnDelivery2.classList.contains('active') ? 'delivery' : 'pickup';
   var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
-  var locationText = '';
-if (orderType === 'delivery' && userLocation2) {
-  var addr2 = (document.getElementById('deliveryAddress2') || {value:''}).value.trim();
-  if (addr2) locationText = '\n📍 Dirección de entrega: ' + addr2;
-}
+  var locationText  = '';
+  if (orderType === 'delivery' && userLocation2) {
+    locationText = '\n📍 Ubicación de entrega: https://maps.google.com/?q=' + userLocation2.lat + ',' + userLocation2.lng;
+  }
   var idText   = custId ? ' — C.I: *' + custId + '*' : '';
   var greeting = name
     ? 'Hola, soy *' + name + '*' + idText + '. Quisiera hacer el siguiente pedido:'
     : 'Hola, quisiera hacer el siguiente pedido:';
+
   var msg = '*FIORELLA B\'PIZZAS*\n'
           + 'Sucursal: *' + currentBranch.name + '*\n'
           + currentBranch.addr + '\n'
@@ -911,59 +1020,6 @@ if (orderType === 'delivery' && userLocation2) {
           + locationText
           + (notes ? '\nNotas: ' + notes : '')
           + '\n\n¡Muchas gracias!';
-  window.open('https://wa.me/' + currentBranch.phones[0] + '?text=' + encodeURIComponent(msg), '_blank');
-}
-function sendWA() {
-  if (!currentBranch || cartItems.length === 0) return;
-  var name   = document.getElementById('custName').value.trim();
-  var custId = document.getElementById('custId').value.trim();
-  var notes  = document.getElementById('custNotes').value.trim();
-  var total  = 0;
-  var lines  = [];
-
-  for (var i = 0; i < cartItems.length; i++) {
-    var entry    = cartItems[i];
-    var extraSum = 0;
-    for (var j = 0; j < entry.extras.length; j++) extraSum += entry.extras[j].price;
-    var unitPrice = entry.basePrice + extraSum;
-    var lineTotal = unitPrice * entry.qty;
-    total += lineTotal;
-
-    var parts = [entry.name];
-    if (entry.sizeLabel) parts.push('(' + entry.sizeLabel + ')');
-    if (entry.extras.length) {
-      var names = [];
-      for (var k = 0; k < entry.extras.length; k++) names.push(entry.extras[k].name);
-      parts.push('+ ' + names.join(', '));
-    }
-    parts.push('x' + entry.qty + ' — ' + formatPrice(lineTotal));
-    lines.push('• ' + parts.join(' '));
-  }
-
-  var orderType     = getOrderType();
-  var orderTypeText = orderType === 'delivery' ? 'Delivery' : 'Pick-up (retiro en sucursal)';
-var locationText = '';
-if (orderType === 'delivery') {
-  var addr = (document.getElementById('deliveryAddress') || {value:''}).value.trim();
-  if (addr) locationText = '\n📍 Dirección de entrega: ' + addr;
-}
-  var idText        = custId ? ' — C.I: *' + custId + '*' : '';
-  var greeting      = name
-    ? 'Hola, soy *' + name + '*' + idText + '. Quisiera hacer el siguiente pedido:'
-    : 'Hola, quisiera hacer el siguiente pedido:';
-
-  var msg = '*FIORELLA B\'PIZZAS*\n'
-          + 'Sucursal: *' + currentBranch.name + '*\n'
-          + currentBranch.addr + '\n'
-          + '─────────────────────────\n'
-          + greeting + '\n\n'
-          + lines.join('\n')
-          + '\n─────────────────────────\n'
-          + '*Total estimado: ' + formatPrice(total) + '*\n'
-          + 'Tipo de pedido: *' + orderTypeText + '*\n'
-          + locationText
-          + (notes ? 'Notas: ' + notes + '\n' : '')
-          + '\n¡Muchas gracias!';
 
   window.open('https://wa.me/' + currentBranch.phones[0] + '?text=' + encodeURIComponent(msg), '_blank');
 }
@@ -1006,6 +1062,8 @@ function initDragHandle() {
     if (panel.offsetHeight < 160) closeCart();
   });
 }
+
+// ── MOBILE NAV ────────────────────────────────────────────────────────────────
 function toggleMobileNav() {
   var nav = document.getElementById('mobileNav');
   if (!nav) return;
@@ -1023,6 +1081,7 @@ function toggleMobileNav() {
   nav.innerHTML = html;
   nav.classList.add('open');
 }
+
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 function showAddedFeedback(name) {
   var toast = document.getElementById('toast');

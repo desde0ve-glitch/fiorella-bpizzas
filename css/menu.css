@@ -148,19 +148,23 @@ input, textarea { font-family: var(--font); }
    SIDEBAR
 ══════════════════════════════════════════ */
 .sidebar {
-  width: var(--sidebar-w);
-  min-height: calc(100vh - var(--header-h));
-  background: var(--bg);
-  position: sticky;
-  top: var(--header-h);
-  height: calc(100vh - var(--header-h));
-  display: flex;
-  flex-direction: column;
-  padding: 24px 16px 24px;
-  flex-shrink: 0;
+  width: 70px;
+  min-width: 70px;
+  padding: 16px 8px;
   overflow-y: auto;
-  justify-content: space-between;
 }
+.cat-btn {
+  flex-direction: column;
+  font-size: 0.6rem;
+  padding: 8px 4px;
+  gap: 4px;
+  text-align: center;
+}
+.cat-btn .cat-icon {
+  width: 26px;
+  height: 26px;
+}
+.sidebar-logo { display: none; }
 
 .cat-nav {
   display: flex;
