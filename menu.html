@@ -138,8 +138,23 @@
 </div>
 
 <div class="field" id="locationField" style="display:none">
-  <input type="text" id="mapSearch" placeholder="🔍 Busca tu dirección...">
-  <div id="map" style="width:100%;height:160px;border-radius:12px;margin-bottom:8px;"></div>
+  <button class="location-btn" id="openMapBtn" onclick="openMapModal()">
+    📍 Seleccionar ubicación de entrega
+  </button>
+  <p class="location-status" id="locationStatus"></p>
+</div>
+
+<!-- Modal del mapa -->
+<div class="map-modal-overlay" id="mapModalOverlay">
+  <div class="map-modal">
+    <div class="map-modal-head">
+      <h3>¿Dónde te entregamos?</h3>
+      <button onclick="closeMapModal()" class="map-modal-close">✕</button>
+    </div>
+    <input type="text" id="mapSearch" placeholder="🔍 Busca tu dirección..." class="map-modal-search">
+    <div id="map" style="width:100%;height:380px;border-radius:16px;"></div>
+    <button class="map-modal-confirm" onclick="confirmMapLocation()">✓ Confirmar ubicación</button>
+  </div>
 </div>
 
       <!-- Datos del cliente -->

@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('modalOverlay').addEventListener('click', function(e){
     if (e.target === e.currentTarget) closeModal();
   });
+  document.getElementById('mapModalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeMapModal();
+});
 });
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
@@ -738,6 +741,30 @@ function getOrderType() {
 
 // ── GOOGLE MAPS ───────────────────────────────────────────────────────────────
 function initMap() {}
+
+function openMapModal() {
+  document.getElementById('mapModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() {
+    loadMap();
+    if (mapInstance) google.maps.event.trigger(mapInstance, 'resize');
+  }, 100);
+}
+
+function closeMapModal() {
+  document.getElementById('mapModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function confirmMapLocation() {
+  if (userLocation) {
+    document.getElementById('locationStatus').textContent = '📍 Ubicación confirmada';
+    document.getElementById('openMapBtn').textContent = '✅ Ubicación seleccionada — cambiar';
+    document.getElementById('openMapBtn').style.borderColor = 'var(--green)';
+    document.getElementById('openMapBtn').style.color = 'var(--green)';
+  }
+  closeMapModal();
+}
 
 function loadMap() {
   if (mapInstance) return;
