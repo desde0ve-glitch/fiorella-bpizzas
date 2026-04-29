@@ -1019,7 +1019,7 @@ function openImgUpload(productId) {
   input.onchange = function(e) {
     var file = e.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { showToast('La imagen no puede superar 2MB', 'error'); return; }
+    if (file.size > 5 * 1024 * 1024) { showToast('La imagen no puede superar 2MB', 'error'); return; }
     var ext      = file.name.split('.').pop();
     var filename = 'products/' + Date.now() + '.' + ext;
     fetch(SUPABASE_URL + '/storage/v1/object/menu-images/' + filename, {
