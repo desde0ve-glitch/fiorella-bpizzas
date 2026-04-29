@@ -305,58 +305,68 @@
 
   </div>
 
-  <script src="js/data.js"></script>
-  <script>
-    var currentIdx = 0;
+  <script src="js/supabase.js"></script>
+<script>
+  var currentIdx = 0;
+  var BRANCHES   = [];
 
-    function cardWidth() {
-      return document.querySelector('.carousel-viewport').offsetWidth;
+  function cardWidth() {
+    return document.querySelector('.carousel-viewport').offsetWidth;
+  }
+
+  function renderCards() {
+    var track = document.getElementById('carouselTrack');
+    var html  = '';
+    for (var i = 0; i < BRANCHES.length; i++) {
+      var b      = BRANCHES[i];
+      var phones = b.phones.map(function(p) {
+        var n = '0' + p.substring(2);
+        return n.replace(/^(\d{4})(\d{3})(\d{2})(\d{2})$/, '$1 - $2 $3 $4');
+      }).join('<br>');
+
+      html += '<div class="branch-card" onclick="selectBranch(\'' + b.id + '\')">'
+            +   '<div class="branch-rect">'
+            +     '<div class="branch-circle"></div>'
+            +     '<img class="branch-icon" src="images/pizzeria.png" alt="">'
+            +     '<div class="branch-name">' + b.name + '</div>'
+            +     '<div class="branch-info">' + b.addr + '<br>' + phones + '</div>'
+            +   '</div>'
+            + '</div>';
     }
+    track.innerHTML = html;
+    updateCarousel();
+  }
 
-    function renderCards() {
-      var track = document.getElementById('carouselTrack');
-      var html  = '';
-      for (var i = 0; i < BRANCHES.length; i++) {
-        var b      = BRANCHES[i];
-        var phones = b.phones.map(function(p) {
-          var n = '0' + p.substring(2);
-          return n.replace(/^(\d{4})(\d{3})(\d{2})(\d{2})$/, '$1 - $2 $3 $4');
-        }).join('<br>');
+  function updateCarousel() {
+    document.getElementById('carouselTrack').style.transform =
+      'translateX(-' + (currentIdx * cardWidth()) + 'px)';
+  }
 
-        html += '<div class="branch-card" onclick="selectBranch(\'' + b.id + '\')">'
-      +   '<div class="branch-rect">'
-      +     '<div class="branch-circle"></div>'
-      +     '<img class="branch-icon" src="images/pizzeria.png" alt="">'
-      +     '<div class="branch-name">' + b.name + '</div>'
-      +     '<div class="branch-info">' + b.addr + '<br>' + phones + '</div>'
-      +   '</div>'
-      + '</div>';
-      }
-      track.innerHTML = html;
-    }
+  function prevBranch() {
+    currentIdx = (currentIdx - 1 + BRANCHES.length) % BRANCHES.length;
+    updateCarousel();
+  }
 
-    function updateCarousel() {
-      document.getElementById('carouselTrack').style.transform =
-        'translateX(-' + (currentIdx * cardWidth()) + 'px)';
-    }
+  function nextBranch() {
+    currentIdx = (currentIdx + 1) % BRANCHES.length;
+    updateCarousel();
+  }
 
-    function prevBranch() {
-      currentIdx = (currentIdx - 1 + BRANCHES.length) % BRANCHES.length;
-      updateCarousel();
-    }
+  function selectBranch(id) {
+    sessionStorage.setItem('selectedBranch', id);
+    window.location.href = 'menu.html';
+  }
 
-    function nextBranch() {
-      currentIdx = (currentIdx + 1) % BRANCHES.length;
-      updateCarousel();
-    }
+  document.addEventListener('DOMContentLoaded', function() {
+    loadMenuFromSupabase().then(function(data) {
+      BRANCHES = data.BRANCHES;
+      renderCards();
+    }).catch(function(err) {
+      console.error('Error cargando sucursales:', err);
+    });
+  });
 
-    function selectBranch(id) {
-      sessionStorage.setItem('selectedBranch', id);
-      window.location.href = 'menu.html';
-    }
-
-    document.addEventListener('DOMContentLoaded', renderCards);
-    window.addEventListener('resize', updateCarousel);
-  </script>
+  window.addEventListener('resize', updateCarousel);
+</script>
 </body>
 </html>

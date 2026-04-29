@@ -18,29 +18,42 @@ var userLocation2 = null;
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
-  var branchId = sessionStorage.getItem('selectedBranch');
-  currentBranch = null;
-  for (var i = 0; i < BRANCHES.length; i++) {
-    if (BRANCHES[i].id === branchId) { currentBranch = BRANCHES[i]; break; }
-  }
-  if (!currentBranch) currentBranch = BRANCHES[0];
+  loadMenuFromSupabase().then(function(data) {
+    window.BRANCHES = data.BRANCHES;
+    window.MENU     = data.MENU;
+    window.EXTRAS   = data.EXTRAS;
 
-  document.getElementById('cartBranchName').textContent = currentBranch.name;
+    var branchId = sessionStorage.getItem('selectedBranch');
+    currentBranch = null;
+    for (var i = 0; i < BRANCHES.length; i++) {
+      if (BRANCHES[i].id === branchId) { currentBranch = BRANCHES[i]; break; }
+    }
+    if (!currentBranch) currentBranch = BRANCHES[0];
 
-  renderCatNav();
+    document.getElementById('cartBranchName').textContent = currentBranch.name;
 
-  if (window.innerWidth <= 700) {
-    renderAllCategories();
-  } else {
-    showCategory('combos');
-  }
+    renderCatNav();
 
-  document.getElementById('modalOverlay').addEventListener('click', function(e){
-    if (e.target === e.currentTarget) closeModal();
+    if (window.innerWidth <= 700) {
+      renderAllCategories();
+    } else {
+      showCategory('combos');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', function(e){
+      if (e.target === e.currentTarget) closeModal();
+    });
+
+    var mapOverlay = document.getElementById('mapModalOverlay');
+    if (mapOverlay) {
+      mapOverlay.addEventListener('click', function(e) {
+        if (e.target === this) closeMapModal();
+      });
+    }
+
+  }).catch(function(err) {
+    console.error('Error cargando menú:', err);
   });
-  document.getElementById('mapModalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeMapModal();
-});
 });
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
