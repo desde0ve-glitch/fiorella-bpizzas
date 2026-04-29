@@ -743,17 +743,30 @@ document.getElementById('loginEmail').addEventListener('keydown', function(e) {
 // ── FETCH AUTENTICADO ─────────────────────────────────────────────────────────
 function sbAuthFetch(method, table, params, body) {
   var url = SUPABASE_URL + '/rest/v1/' + table + (params ? '?' + params : '');
+  var headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + authToken,
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+  if (method === 'PATCH' || method === 'DELETE') {
+    headers['Prefer'] = 'return=representation';
+  }
+  if (method === 'POST') {
+    headers['Prefer'] = 'return=representation';
+  }
   return fetch(url, {
     method: method || 'GET',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + (authToken || SUPABASE_KEY),
-      'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : 'return=representation',
-    },
+    headers: headers,
     body: body ? JSON.stringify(body) : undefined,
   }).then(function(r) {
     if (r.status === 204) return null;
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        console.error('Admin fetch error ' + r.status + ':', t);
+        throw new Error(r.status + ': ' + t);
+      });
+    }
     return r.json();
   });
 }
