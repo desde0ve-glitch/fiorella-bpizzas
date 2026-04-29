@@ -670,7 +670,6 @@
 <!-- TOAST -->
 <div id="adminToast"></div>
 
-<script src="js/supabase.js"></script>
 <script>
 // ═══════════════════════════════════════════
 //  admin.js — Panel CMS Fiorella B'Pizzas
@@ -688,28 +687,28 @@ var allExtras        = [];
 var allBranches      = [];
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
-function sbAuth(endpoint, body) {
-  return fetch(SUPABASE_URL + '/auth/v1/' + endpoint, {
+function adminCall(body) {
+  if (authToken) body.token = authToken;
+  return fetch('/api/admin', {
     method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   }).then(function(r) { return r.json(); });
 }
 
+function dbCall(method, table, params, body) {
+  return adminCall({ action: 'db', method: method, table: table, params: params, body: body });
+}
+
 var authToken = null;
 
-function doLogin() {
+function doLogin(e) {
+  if (e) e.preventDefault();
   var email = document.getElementById('loginEmail').value.trim();
   var pass  = document.getElementById('loginPassword').value;
   var errEl = document.getElementById('loginError');
   errEl.textContent = '';
-
-  if (!email || !pass) { errEl.textContent = 'Completa todos los campos.'; return; }
-
-  sbAuth('token?grant_type=password', { email: email, password: pass })
+  adminCall({ action: 'login', email: email, password: pass })
     .then(function(data) {
       if (data.access_token) {
         authToken = data.access_token;
@@ -718,7 +717,7 @@ function doLogin() {
         document.getElementById('adminApp').classList.add('visible');
         loadAllData().then(function() { showSection('dashboard'); });
       } else {
-        errEl.textContent = 'Credenciales incorrectas.';
+        errEl.textContent = data.error || 'Credenciales incorrectas.';
       }
     })
     .catch(function() { errEl.textContent = 'Error de conexión.'; });
@@ -740,52 +739,15 @@ document.getElementById('loginEmail').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doLogin();
 });
 
-// ── FETCH AUTENTICADO ─────────────────────────────────────────────────────────
-function sbAuthFetch(method, table, params, body) {
-  var url = SUPABASE_URL + '/rest/v1/' + table + (params ? '?' + params : '');
-  var headers = {
-    'apikey': SUPABASE_KEY,
-    'Authorization': 'Bearer ' + authToken,
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-  if (method === 'PATCH' || method === 'DELETE') {
-    headers['Prefer'] = 'return=representation';
-  }
-  if (method === 'POST') {
-    headers['Prefer'] = 'return=representation';
-  }
-  return fetch(url, {
-    method: method || 'GET',
-    headers: headers,
-    body: body ? JSON.stringify(body) : undefined,
-  }).then(function(r) {
-    if (r.status === 204) return null;
-    if (!r.ok) {
-      return r.text().then(function(t) {
-        console.error('Admin fetch error ' + r.status + ':', t);
-        throw new Error(r.status + ': ' + t);
-      });
-    }
-    return r.json();
-  });
-}
 
 // ── CARGAR DATOS ──────────────────────────────────────────────────────────────
 function loadAllData() {
-  return Promise.all([
-    sbFetch('categories',    'select=*&order=sort_order'),
-    sbFetch('products',      'select=*&order=sort_order'),
-    sbFetch('product_sizes', 'select=*&order=sort_order'),
-    sbFetch('extras',        'select=*&order=sort_order'),
-    sbFetch('branches',      'select=*&order=sort_order'),
-  ]).then(function(r) {
-    allCategories = r[0] || [];
-    var rawProducts = r[1] || [];
-    var rawSizes    = r[2] || [];
-    allExtras   = r[3] || [];
-    allBranches = r[4] || [];
-
+  return adminCall({ action: 'loadAll' }).then(function(data) {
+    allCategories = data.categories    || [];
+    allExtras     = data.extras        || [];
+    allBranches   = data.branches      || [];
+    var rawProducts = data.products    || [];
+    var rawSizes    = data.product_sizes || [];
     var sizesByProduct = {};
     rawSizes.forEach(function(s) {
       if (!sizesByProduct[s.product_id]) sizesByProduct[s.product_id] = [];
