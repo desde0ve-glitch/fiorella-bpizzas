@@ -40,7 +40,7 @@ export default async function handler(req) {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=60', // cache 60 segundos
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600', // cache 60 segundos
         'Access-Control-Allow-Origin': '*',
       },
     });
